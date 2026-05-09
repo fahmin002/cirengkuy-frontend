@@ -1,4 +1,58 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&display=swap');
+
+.google-sans-flex {
+  font-family: 'Google Sans Flex', sans-serif;
+}
+
+.google-sans-flex-italic {
+  font-family: 'Google Sans Flex', sans-serif;
+  font-style: italic;
+}
+
+.google-sans-flex-light {
+  font-family: 'Google Sans Flex', sans-serif;
+  font-weight: 300;
+}
+
+.google-sans-flex-bold {
+  font-family: 'Google Sans Flex', sans-serif;
+  font-weight: 700;
+}
+
+.google-sans-flex-bold-italic {
+  font-family: 'Google Sans Flex', sans-serif;
+  font-weight: 700;
+  font-style: italic;
+}
+
+.google-sans-flex-black {
+  font-family: 'Google Sans Flex', sans-serif;
+  font-weight: 900;
+}
+
+.google-sans-flex-black-italic {
+  font-family: 'Google Sans Flex', sans-serif;
+  font-weight: 900;
+  font-style: italic;
+}
+
+.google-sans-flex-regular {
+  font-family: 'Google Sans Flex', sans-serif;
+  font-weight: 400;
+}
+
+.google-sans-flex-regular-medium {
+  font-family: 'Google Sans Flex', sans-serif;
+  font-weight: 500;
+}
+
+.google-sans-flex-regular-italic {
+  font-family: 'Google Sans Flex', sans-serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
 /* :root {
   --text: #6b6375;
   --text-h: #08060d;
