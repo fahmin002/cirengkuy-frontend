@@ -3,7 +3,6 @@ const API_BASE_URL =  import.meta.env.API_BASE_URL || 'http://192.168.1.5:5000/a
 
 const request = async (endpoint, options = {}) => {
   try {
-    console.log(API_BASE_URL)
     const token = localStorage.getItem('token');
 
     const headers = {

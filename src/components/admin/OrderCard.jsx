@@ -21,7 +21,7 @@ export default function OrderCard({ order, onAction, loading }) {
   const action = getNextAction(order.status);
 
   return (
-    <div className="bg-white p-4 rounded-2xl shadow-sm">
+    <div className="bg-white p-4 rounded-2xl shadow-xl border border-gray-200">
       {/* Header */}
       <div className="flex justify-between items-start">
         <div>
@@ -41,7 +41,7 @@ export default function OrderCard({ order, onAction, loading }) {
       </div>
 
       {/* Items preview */}
-      <div className="mt-3 text-sm text-gray-600">
+      <div className="mt-3 text-sm text-left text-gray-600">
         {order.OrderItem?.slice(0, 2).map((it) => (
           <p key={it.id}>
             {it.qty}x {it.Product?.name || 'Produk'}
@@ -59,7 +59,7 @@ export default function OrderCard({ order, onAction, loading }) {
         {action && (
           <button
             disabled={loading}
-            onClick={() => onAction(order.id, action.next)}
+            onClick={() => onAction(order.code, action.next)}
             className={`px-3 py-2 rounded-xl text-sm text-white ${action.color} ${
               loading ? 'opacity-50' : ''
             }`}

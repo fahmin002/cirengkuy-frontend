@@ -7,7 +7,7 @@ import { api } from '../../services/api';
 export default function Orders() {
   const [orders, setOrders] = useState([]);
   const [status, setStatus] = useState('');
-  const [loadingId, setLoadingId] = useState(null);
+  const [loadingCode, setLoadingCode] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const fetchOrders = async () => {
@@ -29,21 +29,21 @@ export default function Orders() {
     return () => clearInterval(interval);
   }, [status]);
 
-  const handleAction = async (id, nextStatus) => {
+  const handleAction = async (code, nextStatus) => {
     try {
-      setLoadingId(id);
-      await api.patch(`/orders/${id}/status`, { status: nextStatus });
+      setLoadingCode(code);
+      await api.patch(`/orders/${code}/status`, { status: nextStatus });
       await fetchOrders();
     } catch (err) {
       alert(err.message);
     } finally {
-      setLoadingId(null);
+      setLoadingCode(null);
     }
   };
 
   return (
     <div className="p-4 pb-24">
-      <h1 className="text-xl font-bold mb-4">Pesanan</h1>
+      <h1 className="text-xl font-bold text-left mb-4">Pesanan</h1>
 
       <StatusTabs value={status} onChange={setStatus} />
 
@@ -58,7 +58,7 @@ export default function Orders() {
           <OrderCard
             key={order.id}
             order={order}
-            loading={loadingId === order.id}
+            loading={loadingCode === order.code}
             onAction={handleAction}
           />
         ))}

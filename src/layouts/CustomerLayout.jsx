@@ -3,6 +3,8 @@ import { FaRegUser, FaUser } from 'react-icons/fa';
 import { HiHome, HiMiniUserCircle, HiOutlineHome, HiOutlineShoppingCart, HiOutlineUserCircle, HiShoppingCart } from 'react-icons/hi2';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { MdOutlineShoppingCartCheckout, MdShoppingCartCheckout } from 'react-icons/md';
+import { PiClipboardDuotone, PiClipboardFill, PiClipboardText } from 'react-icons/pi';
 
 export default function CustomerLayout() {
   const location = useLocation();
@@ -43,7 +45,7 @@ export default function CustomerLayout() {
                     {totalItems}
                   </div>
                 )}
-                <HiShoppingCart size={40} />
+                <MdShoppingCartCheckout size={40} />
                 <span className='font-semibold'>Checkout</span>
               </div>
             ) : (
@@ -54,23 +56,23 @@ export default function CustomerLayout() {
                     {totalItems}
                   </div>
                 )}
-                <HiOutlineShoppingCart size={40} />
+                <MdOutlineShoppingCartCheckout size={40} />
                 <span className='font-semibold'>Checkout</span>
               </div>
             )}
           </Link>
           {/* Profile */}
-          <Link to="/profile"
+          <Link to="/orders"
           >
-            {location.pathname === '/profile' ? (
+            {location.pathname === '/orders' ? (
               <div className='flex flex-col items-center text-orange-500 w-12 h-12'>
-                <HiMiniUserCircle size={40} />
-                <span className='font-semibold'>Profile</span>
+                <PiClipboardFill size={40} />
+                <span className='font-semibold'>Orders</span>
               </div>
             ) : (
               <div className='flex flex-col items-center w-12 h-12'>
-                <HiOutlineUserCircle size={40} />
-                <span className='font-semibold'>Profile</span>
+                <PiClipboardText size={40} />
+                <span className='font-semibold'>Orders</span>
               </div>
             )}
           </Link>
