@@ -1,11 +1,12 @@
 // src/components/orders/StatusTabs.jsx
 const TABS = [
-  { key: '', label: 'Semua' },
-  { key: 'pending', label: 'Pending' },
-  { key: 'paid', label: 'Dibayar' },
-  { key: 'cooking', label: 'Dimasak' },
-  { key: 'ready', label: 'Siap' },
-  { key: 'completed', label: 'Selesai' },
+  { key: "", label: "Semua" },
+  { key: "pending", label: "Pending" },
+  { key: "paid", label: "Dibayar" },
+  { key: "cooking", label: "Dimasak" },
+  { key: "ready", label: "Siap" },
+  { key: "cancelled", label: "Dibatalkan" },
+  { key: "completed", label: "Selesai" },
 ];
 
 export default function StatusTabs({ value, onChange }) {
@@ -15,14 +16,14 @@ export default function StatusTabs({ value, onChange }) {
         const active = value === tab.key;
         return (
           <button
-            key={tab.key || 'all'}
+            key={tab.key || "all"}
             onClick={() => onChange(tab.key)}
             className={[
-              'px-3 py-2 rounded-xl text-sm whitespace-nowrap transition',
+              "px-3 py-2 rounded-xl text-sm whitespace-nowrap transition",
               active
-                ? 'bg-orange-500 text-white shadow'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            ].join(' ')}
+                ? "bg-orange-500 text-white shadow"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200",
+            ].join(" ")}
           >
             {tab.label}
           </button>

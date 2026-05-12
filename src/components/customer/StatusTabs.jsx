@@ -5,6 +5,7 @@ const TABS = [
   { key: "paid", label: "Dibayar" },
   { key: "cooking", label: "Dimasak" },
   { key: "ready", label: "Siap" },
+  { key: "cancelled", label: "Dibatalkan" },
   { key: "completed", label: "Selesai" },
 ];
 

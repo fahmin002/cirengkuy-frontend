@@ -33,9 +33,19 @@ export default function OrderDetail() {
     }
   };
 
+  const handleCancelButton = async () => {
+    try {
+      if (order.status === "cancelled") return;
+
+      await api.patch(`/orders/${order.id}/cancel`);
+      navigate("/orders");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     fetchOrder();
-
     // 🔁 polling tiap 5 detik
     const interval = setInterval(fetchOrder, 5000);
 
@@ -146,25 +156,43 @@ export default function OrderDetail() {
       {/* TOTAL */}
       <div className="mt-6 text-lg font-bold">Total: Rp {order.total}</div>
 
+      {/* Jika paymentmethod cash, status otomatis paid*/}
+      {/* jika status paid/pending, masih bisa cancel untuk payement cash */}
+      {order.paymentMethod === "cash" &&
+        statusMap[order.status] === "Sudah Dibayar" && (
+          <button
+            onClick={handleCancelButton}
+            className="mt-4 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-colors"
+          >
+            Batalkan Pesanan
+          </button>
+        )}
+
       {/* jika qris, dan belum menyelesaikan pembayaran */}
       {statusMap[order.status] === "Menunggu Pembayaran" &&
         order.paymentMethod === "qris" && (
-          <a
-            href={`/payment/${order.code}`}
-            className="inline-block bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors mt-4"
-          >
-            Bayar Sekarang
-          </a>
+          <>
+            {/* expired datetime */}
+            <p className="p-4 text-sm text-gray-500">
+              Lakukan pembayaran sebelum: <br></br>
+              {formatDateTime(order.paymentExpiredAt)}
+            </p>
+            <p className="mt-2 text-sm text-gray-500">
+              <a
+                href={`${order.paymentUrl}`}
+                className="inline-block bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors"
+              >
+                Bayar Sekarang
+              </a>
+            </p>
+            <button
+              onClick={handleCancelButton}
+              className="mt-4 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-colors"
+            >
+              Batalkan Pembayaran
+            </button>
+          </>
         )}
-      {/* link ke payment */}
-      {statusMap[order.status] === "Menunggu Pembayaran" && (
-        <a
-          href={`/payment/${order.code}`}
-          className="inline-block bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors"
-        >
-          Bayar Sekarang
-        </a>
-      )}
     </div>
   );
 }

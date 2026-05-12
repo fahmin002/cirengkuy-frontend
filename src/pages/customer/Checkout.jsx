@@ -38,6 +38,12 @@ export default function Checkout() {
       return;
     }
 
+    // Cek Alamatnya jika pengiriman bukan pickup
+    if (form.deliveryMethod !== "pickup" && !form.address) {
+      alert("Alamat wajib diisi!");
+      return;
+    }
+
     if (cart.length === 0) {
       alert("Keranjang kosong!");
       return;

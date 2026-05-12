@@ -14,6 +14,7 @@ import PaymentSuccess from "../pages/customer/PaymentSuccess";
 import * as CustomerOrders from "../pages/customer/Orders";
 import OrderDetail from "../pages/customer/OrderDetail";
 import Login from "../pages/admin/Login";
+import Products from "../pages/admin/Products";
 
 function AdminRoute({ children }) {
   const isAdmin = true; // nanti dari token
@@ -43,6 +44,7 @@ export default function AppRoutes() {
           <Route index element={<Dashboard />} />
           <Route path="orders" element={<Orders />} />
           <Route path="login" element={<Login />} />
+          <Route path="products" element={<Products />} />
         </Route>
       </Routes>
     </BrowserRouter>

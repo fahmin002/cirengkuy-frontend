@@ -1,12 +1,13 @@
-
-const API_BASE_URL =  import.meta.env.API_BASE_URL || 'http://192.168.1.5:5000/api';
+const API_BASE_URL =
+  import.meta.env.VITE_BACKEND_URL + "/api" || "http://192.168.1.5:5000/api";
 
 const request = async (endpoint, options = {}) => {
   try {
-    const token = localStorage.getItem('token');
+    const isFormData = options.body instanceof FormData;
+    const token = localStorage.getItem("token");
 
     const headers = {
-      'Content-Type': 'application/json',
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
       ...(options.headers || {}),
       ...(token && { Authorization: `Bearer ${token}` }),
     };
@@ -18,21 +19,20 @@ const request = async (endpoint, options = {}) => {
 
     // 🔥 handle unauthorized (auto logout)
     if (response.status === 401) {
-      localStorage.removeItem('token');
-      window.location.href = '/admin/login';
+      localStorage.removeItem("token");
+      window.location.href = "/admin/login";
       return;
     }
 
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || 'Something went wrong');
+      throw new Error(data.message || "Something went wrong");
     }
 
     return data;
-
   } catch (err) {
-    console.error('API error:', err.message);
+    console.error("API error:", err.message);
     throw err;
   }
 };
@@ -42,25 +42,25 @@ const api = {
 
   post: (endpoint, body) =>
     request(endpoint, {
-      method: 'POST',
-      body: JSON.stringify(body),
+      method: "POST",
+      body: body instanceof FormData ? body : JSON.stringify(body),
     }),
 
   put: (endpoint, body) =>
     request(endpoint, {
-      method: 'PUT',
-      body: JSON.stringify(body),
+      method: "PUT",
+      body: body instanceof FormData ? body : JSON.stringify(body),
     }),
 
   patch: (endpoint, body) =>
     request(endpoint, {
-      method: 'PATCH',
-      body: JSON.stringify(body),
+      method: "PATCH",
+      body: body instanceof FormData ? body : JSON.stringify(body),
     }),
 
   delete: (endpoint) =>
     request(endpoint, {
-      method: 'DELETE',
+      method: "DELETE",
     }),
 };
 
