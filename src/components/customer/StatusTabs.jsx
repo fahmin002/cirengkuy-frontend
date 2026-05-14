@@ -9,7 +9,7 @@ const TABS = [
   { key: "completed", label: "Selesai" },
 ];
 
-export default function StatusTabs({ value, onChange }) {
+export default function StatusTabs({ value, onChange, setOrders, setPage }) {
   return (
     <div className="flex gap-2 overflow-x-auto pb-2">
       {TABS.map((tab) => {
@@ -17,7 +17,11 @@ export default function StatusTabs({ value, onChange }) {
         return (
           <button
             key={tab.key || "all"}
-            onClick={() => onChange(tab.key)}
+            onClick={() => {
+              onChange(tab.key)
+              setOrders([])
+              setPage(1)
+            }}
             className={[
               "px-3 py-2 rounded-xl text-sm whitespace-nowrap transition",
               active

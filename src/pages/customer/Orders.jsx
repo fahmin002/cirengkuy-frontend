@@ -17,12 +17,39 @@ export default function Orders() {
     cancelled: "Dibatalkan",
   };
 
+
+  const statusStyle = {
+    pending:
+      "bg-yellow-50 ring-1 shadow-yellow-100 ring-yellow-200",
+
+    paid:
+      "bg-blue-50 ring-1 ring-blue-200 shadow-blue-100",
+
+    cooking:
+      "bg-orange-50 ring-1 ring-orange-200 shadow-orange-100",
+
+    ready:
+      "bg-green-50 shadow-green-100 ring-1 ring-green-200",
+
+    completed:
+      "bg-gray-100 ring-1 ring-gray-200 shadow-gray-100 opacity-80",
+
+    cancelled:
+      "bg-red-50 ring-1 ring-red-200 shadow-red-100",
+  };
+
   const customer = localStorage.getItem("customer");
   const phone = customer ? JSON.parse(customer).phone : null;
 
   const [orders, setOrders] = useState([]);
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(true);
+
+  const [page, setPage] =
+    useState(1);
+
+  const [hasMore, setHasMore] =
+    useState(true);
 
   const navigate = useNavigate();
 
@@ -36,21 +63,55 @@ export default function Orders() {
       }
 
       try {
+        const params =
+          new URLSearchParams({
+            page,
+            limit: 5,
+          });
+
+        if (status) {
+          params.append(
+            "status",
+            status
+          );
+        }
+
         const res = await api.get(
-          `/orders/customer/${phone}${status ? `/${status}` : ""}`,
+          `/orders/customer/${phone}?${params.toString()}`
         );
-        setOrders(res.data || []);
-        setLoading(false);
+
+
+        setOrders((prev) => {
+          const merged =
+            page === 1
+              ? res.data
+              : [...prev, ...res.data];
+
+          const unique = merged.filter(
+            (order, index, self) =>
+              index ===
+              self.findIndex(
+                (o) => o.id === order.id
+              )
+          );
+
+          return unique;
+        });
+        setHasMore(
+          page <
+          res.pagination.totalPages
+        )
       } catch (err) {
         alert(err.message);
+      } finally {
+        setLoading(false);
       }
     };
-
     handleSearch();
-  }, [phone, status]);
+  }, [phone, status, page]);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="p-4 bg-gray-50 rounded-xl">
       {/* Header */}
       <div className="mb-5">
         <h1 className="text-2xl google-sans-flex-bold text-left font-bold">
@@ -58,7 +119,7 @@ export default function Orders() {
         </h1>
       </div>
 
-      <StatusTabs value={status} onChange={setStatus} />
+      <StatusTabs setOrders={setOrders} setPage={setPage} value={status} onChange={setStatus} />
       {loading && <p className="text-center text-gray-400">Loading...</p>}
 
       {!loading && orders.length === 0 && (
@@ -71,7 +132,7 @@ export default function Orders() {
           <button
             key={order.id}
             onClick={() => navigate(`/order/${order.code}`)}
-            className="w-full bg-white rounded-2xl p-4 shadow-sm text-left active:scale-[0.99] transition"
+            className={`w-full ${statusStyle[order.status]} rounded-2xl p-4 shadow-sm text-left active:scale-[0.99] transition`}
           >
             <div className="flex justify-between items-start">
               <div>
@@ -103,6 +164,22 @@ export default function Orders() {
             </div>
           </button>
         ))}
+        {hasMore && (
+          <button
+            onClick={() =>
+              setPage((prev) => prev + 1)
+            }
+            className="
+      w-full
+      bg-orange-500
+      text-white
+      rounded-2xl
+      py-3
+    "
+          >
+            Selanjutnya
+          </button>
+        )}
       </div>
     </div>
   );

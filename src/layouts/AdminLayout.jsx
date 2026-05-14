@@ -22,6 +22,8 @@ import {
   RiDashboardHorizontalLine,
 } from "react-icons/ri";
 import { PiPackageDuotone, PiPackageFill } from "react-icons/pi";
+import { TbLogout } from "react-icons/tb";
+import { logout } from "../services/logout";
 export default function AdminLayout() {
   const location = useLocation();
 
@@ -29,7 +31,7 @@ export default function AdminLayout() {
     <>
       {location.pathname !== "/admin/login" ? (
         <>
-          <div>
+          <div className="">
             {/* Navbar */}
             {/* Bottom Navigation like mobile app */}
             <nav className="fixed rounded-t-4xl shadow-2xl bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 flex justify-center z-10">
@@ -62,20 +64,6 @@ export default function AdminLayout() {
                     </div>
                   )}
                 </Link>
-                {/* Report */}
-                <Link to="/admin/reports">
-                  {location.pathname === "/admin/reports" ? (
-                    <div className="flex flex-col items-center text-orange-500 w-12 h-12">
-                      <RiBarChartFill size={20} />
-                      <span className="font-semibold text-sm">Reports</span>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center w-12 h-12">
-                      <RiBarChartBoxLine size={20} />
-                      <span className="font-semibold text-sm">Reports</span>
-                    </div>
-                  )}
-                </Link>
                 {/* Orders */}
                 <Link to="/admin/orders">
                   {location.pathname === "/admin/orders" ? (
@@ -91,19 +79,12 @@ export default function AdminLayout() {
                   )}
                 </Link>
                 {/* Profile */}
-                <Link to="/profile">
-                  {location.pathname === "/profile" ? (
-                    <div className="flex flex-col items-center text-orange-500 w-12 h-12">
-                      <HiMiniUserCircle size={20} />
-                      <span className="font-semibold text-sm">Profile</span>
-                    </div>
-                  ) : (
+                <button onClick={logout}>
                     <div className="flex flex-col items-center w-12 h-12">
-                      <HiOutlineUserCircle size={20} />
-                      <span className="font-semibold text-sm">Profile</span>
+                      <TbLogout size={20} />
+                      <span className="font-semibold text-sm">Logout</span>
                     </div>
-                  )}
-                </Link>
+                </button>
               </div>
             </nav>
 

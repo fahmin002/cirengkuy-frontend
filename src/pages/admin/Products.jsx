@@ -32,7 +32,6 @@ export default function Products() {
 
   useEffect(() => {
     fetchProducts();
-    console.log(products);
   }, []);
 
   /* ---------------- FILTER ---------------- */
@@ -55,9 +54,9 @@ export default function Products() {
   }, [products, search, filter]);
 
   return (
-    <div className="min-h-screen bg-gray-50 rounded-xl pb-28">
+    <div className="p-4 bg-gray-50 rounded-xl pb-24">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-gray-50 px-4 pt-4 pb-3">
+      <div className="sticky top-0 z-10 bg-gray-50 ">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl text-left font-bold text-gray-900">
@@ -145,7 +144,7 @@ export default function Products() {
       </div>
 
       {/* Content */}
-      <div className="px-4 mt-4">
+      <div className="mt-4">
         {/* Loading */}
         {loading && (
           <div className="flex justify-center py-10">

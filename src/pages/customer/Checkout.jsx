@@ -95,8 +95,8 @@ export default function Checkout() {
   };
 
   return (
-    <div className="p-4 pb-24">
-      <div className="pb-26">
+    <div className="p-4 bg-gray-50 rounded-xl pb-24">
+      <div className="">
         <h1 className="text-xl font-bold google-sans-flex-bold text-left">
           Checkout
         </h1>
@@ -202,7 +202,7 @@ export default function Checkout() {
             onChange={(e) => setForm({ ...form, notes: e.target.value })}
           />
         </div>
-        <div className="mb-8">
+        <div className="">
           {cart.map((item) => (
             <div
               key={item.id}
@@ -210,10 +210,10 @@ export default function Checkout() {
             >
               <div>
                 <img
-                  src="https://i.ytimg.com/vi/CaqSlzAgkN4/maxresdefault.jpg"
+                  src={`${import.meta.env.VITE_BACKEND_URL}${item.imageUrl}`}
                   className="rounded-4xl object-cover h-16 shadow-md"
                   alt=""
-                  srcset=""
+                  srcSet=""
                 />
               </div>
               <div>
@@ -251,7 +251,7 @@ export default function Checkout() {
       </div>
 
       {/* tombol harus di bottom */}
-      <div className="fixed bottom-20 left-0 right-0 px-4 pb-6 bg-white border-t border-gray-200">
+      <div className="">
         {/* Total */}
         <div className="mt-6 text-lg font-bold">Total: Rp {total}</div>
 

@@ -16,10 +16,8 @@ function Home() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const res = await api.get("/products");
-        // filter produk yang isActive = true
-        const activeProducts = res.data.filter((p) => p.isActive);
-        setProducts(activeProducts);
+        const res = await api.get("/products/client");
+        setProducts(res.data || []);
       } catch (err) {
         console.error("Failed to fetch products:", err);
       }

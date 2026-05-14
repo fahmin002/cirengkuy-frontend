@@ -1,46 +1,188 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { BiArrowBack } from "react-icons/bi";
 import { api } from "../../services/api";
+
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
     try {
-      const res = await api.post('/auth/login', { email, password });
-      console.log(res);
-      localStorage.setItem('token', res.data.token);
-      window.location.href = '/admin/orders';
+      if (!username || !password) {
+        return alert("Username dan password wajib diisi");
+      }
+
+      setLoading(true);
+
+      const res = await api.post("/auth/login", {
+        username,
+        password,
+      });
+
+      localStorage.setItem(
+        "token",
+        res.data.token
+      );
+
+      navigate("/admin/orders");
     } catch (err) {
-      console.error('Login error:', err);
-      alert('Login gagal');
+      console.error("Login error:", err);
+      alert("Login gagal");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="h-screen flex items-center justify-center">
-      <div className="p-6 bg-white rounded-xl shadow w-80">
-        <h2 className="text-lg font-bold mb-4">Admin Login</h2>
-
-        <input
-          placeholder="Email"
-          className="w-full mb-2 p-2 border rounded"
-          onChange={e => setEmail(e.target.value)}
+    <div
+      className="
+        min-h-screen
+        bg-gradient-to-br
+        from-orange-50
+        to-white
+        flex
+        flex-col
+        gap-10
+        items-center
+        justify-center
+        px-5
+      "
+    >
+      {/* Card */}
+      <div
+        className="
+          w-full max-w-sm
+          bg-white
+          rounded-[32px]
+          shadow-xl
+          border border-gray-100
+          overflow-hidden
+        "
+      >
+        {/* Top Accent */}
+        <div
+          className="
+            h-2
+            bg-gradient-to-r
+            from-orange-400
+            to-orange-500
+          "
         />
 
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full mb-4 p-2 border rounded"
-          onChange={e => setPassword(e.target.value)}
-        />
+        <div className="p-7">
+          {/* Heading */}
+          <div className="mb-7">
+            <p className="text-sm text-orange-500 font-semibold">
+              CirengKuy Admin
+            </p>
 
-        <button
-          onClick={handleLogin}
-          className="w-full bg-orange-500 text-white p-2 rounded"
-        >
-          Login
-        </button>
+            <h1 className="text-3xl font-bold text-gray-900 mt-1">
+              Selamat Datang
+            </h1>
+
+            <p className="text-sm text-gray-500 mt-2 leading-relaxed">
+              Login untuk mengelola pesanan,
+              produk, dan dashboard operasional.
+            </p>
+          </div>
+
+          {/* Username */}
+          <div className="mb-4 text-left">
+            <label className="text-sm font-medium text-gray-700">
+              Username
+            </label>
+
+            <input
+              placeholder="Masukkan username"
+              value={username}
+              onChange={(e) =>
+                setUsername(e.target.value)
+              }
+              className="
+                w-full mt-2
+                border border-gray-200
+                rounded-2xl
+                px-4 py-3
+                outline-none
+                focus:border-orange-400
+                transition
+              "
+            />
+          </div>
+
+          {/* Password */}
+          <div className="mb-6 text-left">
+            <label className="text-sm font-medium text-gray-700">
+              Password
+            </label>
+
+            <input
+              type="password"
+              placeholder="Masukkan password"
+              value={password}
+              onChange={(e) =>
+                setPassword(e.target.value)
+              }
+              className="
+                w-full mt-2
+                border border-gray-200
+                rounded-2xl
+                px-4 py-3
+                outline-none
+                focus:border-orange-400
+                transition
+              "
+            />
+          </div>
+
+          {/* Login Button */}
+          <button
+            onClick={handleLogin}
+            disabled={loading}
+            className="
+              w-full
+              bg-orange-500
+              hover:bg-orange-600
+              active:scale-[0.98]
+              disabled:opacity-60
+              text-white
+              py-4
+              rounded-2xl
+              font-semibold
+              shadow-lg shadow-orange-200
+              transition
+            "
+          >
+            {loading
+              ? "Memproses..."
+              : "Login Admin"}
+          </button>
+        </div>
       </div>
+            {/* Back Button */}
+      <button
+        onClick={() => navigate("/")}
+        className="
+          mb-10
+          flex items-center gap-2
+          bg-white
+          border border-gray-100
+          shadow-sm
+          rounded-2xl
+          px-4 py-3
+          text-sm font-medium text-gray-700
+          active:scale-95
+          transition
+        "
+      >
+        <BiArrowBack size={18} />
+        Kembali
+      </button>
     </div>
   );
 }

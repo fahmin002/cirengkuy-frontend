@@ -10,7 +10,7 @@ export default function PaymentSuccess() {
   const isPaid = status === "settlement";
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center text-center p-6">
+    <div className="bg-gray-50 h-screen flex flex-col items-center justify-center text-center p-6">
       {/* Logo */}
       <img
         src="web-app-manifest-192x192.png"

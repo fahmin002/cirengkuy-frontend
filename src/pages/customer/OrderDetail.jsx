@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import { api } from "../../services/api";
 import { formatDateTime } from "../../utils/date";
 import { HiArrowLeft } from "react-icons/hi";
+import { BiArrowBack } from "react-icons/bi";
+import { socket } from "../../services/socket";
+import { toast } from "sonner";
 export default function OrderDetail() {
   const { id } = useParams();
   const code = id; // alias untuk readability
@@ -24,6 +27,25 @@ export default function OrderDetail() {
     completed: "bg-gray-500",
     cancelled: "bg-red-500",
   };
+  const statusStyle = {
+    pending:
+      "bg-yellow-50 ring-1 shadow-yellow-100 ring-yellow-200",
+
+    paid:
+      "bg-blue-50 ring-1 ring-blue-200 shadow-blue-100",
+
+    cooking:
+      "bg-orange-50 ring-1 ring-orange-200 shadow-orange-100",
+
+    ready:
+      "bg-green-50 shadow-green-100 ring-1 ring-green-200",
+
+    completed:
+      "bg-gray-100 ring-1 ring-gray-200 shadow-gray-100 opacity-80",
+
+    cancelled:
+      "bg-red-50 ring-1 ring-red-200 shadow-red-100",
+  };
   const fetchOrder = async () => {
     try {
       const res = await api.get(`/orders/${code}`);
@@ -44,22 +66,84 @@ export default function OrderDetail() {
     }
   };
 
+  const notifSound = new Audio(
+    "/sound/ding.mp3"
+  );
+
   useEffect(() => {
     fetchOrder();
     // 🔁 polling tiap 5 detik
     const interval = setInterval(fetchOrder, 5000);
 
-    return () => clearInterval(interval);
+    if (!code) return;
+    const enableAudio = async () => {
+      try {
+        await notifSound.play();
+
+        notifSound.pause();
+
+        notifSound.currentTime = 0;
+      } catch (err) {
+        console.log("Audio belum diizinkan");
+      }
+    };
+
+    window.addEventListener("click", enableAudio, {
+      once: true,
+    });
+
+    socket.emit(
+      "join-order-room",
+      code
+    );
+
+    socket.on(
+      "order-status-updated",
+      (data) => {
+        toast.success(`Pesanan ${statusMap[data.status]}`);
+        notifSound.currentTime = 0;
+
+        notifSound.play();
+        setOrder((prev) => ({
+          ...prev,
+          status: data.status,
+        }));
+      }
+    );
+    return () => {
+      clearInterval(interval);
+      socket.off(
+        "order-status-updated"
+      );
+    }
   }, [code]);
 
   if (!order) return <p className="p-4">Loading...</p>;
 
   return (
-    <div className="p-4 pb-24">
-      <div className="flex mb-4 border-gray-200 gap-6">
+    <div className={`rounded-3xl p-4 shadow-sm mb-24 ${statusStyle[order.status]}`}>
+      <div className="flex mb-4 items-center border-gray-200 gap-6">
         {/* Tombol kembali */}
-        <button onClick={() => navigate("/orders")} className="mb-2">
+        {/* <button onClick={() => navigate("/orders")} className="mb-2">
           <HiArrowLeft className="text-2xl" />
+        </button> */}
+        <button
+          onClick={() => navigate("/orders")}
+          className="
+          
+          flex items-center gap-2
+          bg-white
+          border border-gray-100
+          shadow-sm
+          rounded-2xl
+          px-4 py-3
+          text-sm font-medium text-gray-700
+          active:scale-95
+          transition
+        "
+        >
+          <BiArrowBack size={18} />
+          Kembali
         </button>
         <h2 className="text-left google-sans-flex-bold">
           Pesanan {order.customerName}
@@ -74,7 +158,7 @@ export default function OrderDetail() {
 
       {/* STATUS */}
       <div className="mb-4 text-left flex flex-row justify-between">
-        <p className="font-semibold">Status</p>
+        <p className="text-sm text-gray-500">Status Pesanan</p>
         <span
           className={`px-3 py-1 rounded-full text-white text-sm
           ${statusColor[order.status]}
@@ -87,14 +171,14 @@ export default function OrderDetail() {
       {/* Waktu pembayaran */}
       {order.paidAt && (
         <div className="mb-4 text-left flex flex-row justify-between">
-          <p className="font-semibold">Waktu Pembayaran</p>
+          <p className="text-sm text-gray-500">Waktu Pembayaran</p>
           <span className="text-left">{formatDateTime(order.paidAt)}</span>
         </div>
       )}
 
       {/* delivery Method */}
       <div className="mb-4 text-left flex flex-row justify-between">
-        <p className="font-semibold">Metode Pengiriman</p>
+        <p className="text-sm text-gray-500">Metode Pengiriman</p>
         {/* Badge */}
         <span
           className={`px-3 py-1 rounded-full text-white text-sm
@@ -109,7 +193,7 @@ export default function OrderDetail() {
 
       {/* payment Method */}
       <div className="mb-4 text-left flex flex-row justify-between">
-        <p className="font-semibold">Metode Pembayaran</p>
+        <p className="text-sm text-gray-500">Metode Pembayaran</p>
         {/* Badge */}
         <span
           className={`px-3 py-1 rounded-full text-white text-sm
@@ -120,15 +204,15 @@ export default function OrderDetail() {
         </span>
       </div>
       {/*Alamat */}
-      <div className="mb-4 text-left">
-        <p className="font-semibold">Alamat Pengiriman</p>
-        <p className="text-sm text-gray-500">{order.address}</p>
+      <div className="mb-4 flex items-center justify-between">
+        <p className="text-sm text-gray-500">Alamat Pengiriman</p>
+        <p className="text-right">{order.address}</p>
       </div>
 
       {/* Waktu Pengambilan */}
-      <div className="mb-4 text-left">
-        <p className="font-semibold">Waktu Pengambilan</p>
-        <p className="text-sm text-gray-500">
+      <div className="mb-4 flex items-center justify-between">
+        <p className="text-sm text-gray-500">Waktu Pengambilan</p>
+        <p className="">
           {order.scheduledAt
             ? `Diambil ${formatDateTime(order.pickupTime)}`
             : `Ambil Sekarang`}
@@ -143,7 +227,7 @@ export default function OrderDetail() {
           >
             <div>
               <p className="font-semibold">{item.Product.name}</p>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-left text-gray-500">
                 {item.qty} x Rp {item.price}
               </p>
             </div>
@@ -155,6 +239,7 @@ export default function OrderDetail() {
 
       {/* TOTAL */}
       <div className="mt-6 text-lg font-bold">Total: Rp {order.total}</div>
+
 
       {/* Jika paymentmethod cash, status otomatis paid*/}
       {/* jika status paid/pending, masih bisa cancel untuk payement cash */}

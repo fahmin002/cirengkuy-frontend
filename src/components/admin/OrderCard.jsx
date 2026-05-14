@@ -1,3 +1,6 @@
+import { FaRegEye } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+
 // src/components/orders/OrderCard.jsx
 const statusMap = {
   pending: 'Pending',
@@ -17,13 +20,35 @@ const statusColor = {
   cancelled: 'bg-red-500',
 };
 
+
+const statusStyle = {
+  pending:
+    "bg-yellow-50 ring-1 shadow-yellow-100 ring-yellow-200",
+
+  paid:
+    "bg-blue-50 ring-1 ring-blue-200 shadow-blue-100",
+
+  cooking:
+    "bg-orange-50 ring-1 ring-orange-200 shadow-orange-100",
+
+  ready:
+    "bg-green-50 shadow-green-100 ring-1 ring-green-200",
+
+  completed:
+    "bg-gray-100 ring-1 ring-gray-200 shadow-gray-100 opacity-80",
+
+  cancelled:
+    "bg-red-50 ring-1 ring-red-200 shadow-red-100",
+};
+
 export default function OrderCard({ order, onAction, loading }) {
+  const navigate = useNavigate();
   const action = getNextAction(order.status);
 
   return (
-    <div className="bg-white p-4 rounded-2xl shadow-xl border border-gray-200">
+    <div className={`p-4 rounded-2xl shadow-lg ${statusStyle[order.status]}`}>
       {/* Header */}
-      <div className="flex justify-between items-start">
+      <div onClick={() => navigate(`/admin/order/${order.code}`)} className="flex justify-between items-start">
         <div>
           <p className="font-semibold">
             #{order.id} • {order.customerName}
@@ -33,11 +58,13 @@ export default function OrderCard({ order, onAction, loading }) {
           )}
         </div>
 
+
         <span
           className={`px-3 py-1 rounded-full text-white text-xs ${statusColor[order.status]}`}
         >
           {statusMap[order.status]}
         </span>
+
       </div>
 
       {/* Items preview */}
@@ -60,9 +87,8 @@ export default function OrderCard({ order, onAction, loading }) {
           <button
             disabled={loading}
             onClick={() => onAction(order.code, action.next)}
-            className={`px-3 py-2 rounded-xl text-sm text-white ${action.color} ${
-              loading ? 'opacity-50' : ''
-            }`}
+            className={`px-3 py-2 rounded-xl text-sm text-white ${action.color} ${loading ? 'opacity-50' : ''
+              }`}
           >
             {action.label}
           </button>
