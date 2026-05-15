@@ -24,6 +24,7 @@ import {
 import { PiPackageDuotone, PiPackageFill } from "react-icons/pi";
 import { TbLogout } from "react-icons/tb";
 import { logout } from "../services/logout";
+import { MdInsertChart, MdInsertChartOutlined } from "react-icons/md";
 export default function AdminLayout() {
   const location = useLocation();
 
@@ -34,7 +35,7 @@ export default function AdminLayout() {
           <div className="">
             {/* Navbar */}
             {/* Bottom Navigation like mobile app */}
-            <nav className="fixed rounded-t-4xl shadow-2xl bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 flex justify-center z-10">
+            <nav className="fixed rounded-t-4xl ring-1 ring-orange-200 shadow-orange-200 shadow-2xl bottom-0 left-0 right-0 bg-white p-4 flex justify-center z-10">
               <div className="flex justify-around w-full ease-in-out duration-300 max-w-md">
                 {/* Home */}
                 <Link to="/admin">
@@ -78,12 +79,26 @@ export default function AdminLayout() {
                     </div>
                   )}
                 </Link>
-                {/* Profile */}
-                <button onClick={logout}>
-                    <div className="flex flex-col items-center w-12 h-12">
-                      <TbLogout size={20} />
-                      <span className="font-semibold text-sm">Logout</span>
+                {/* Reports */}
+                <Link to="/admin/reports">
+                  {location.pathname === "/admin/reports" ? (
+                    <div className="flex flex-col items-center text-orange-500 w-12 h-12">
+                      <MdInsertChart size={20} />
+                      <span className="font-semibold text-sm">Reports</span>
                     </div>
+                  ) : (
+                    <div className="flex flex-col items-center w-12 h-12">
+                      <MdInsertChartOutlined size={20} />
+                      <span className="font-semibold text-sm">Reports</span>
+                    </div>
+                  )}
+                </Link>
+                {/* Logout */}
+                <button onClick={logout}>
+                  <div className="flex flex-col items-center w-12 h-12">
+                    <TbLogout size={20} />
+                    <span className="font-semibold text-sm">Logout</span>
+                  </div>
                 </button>
               </div>
             </nav>

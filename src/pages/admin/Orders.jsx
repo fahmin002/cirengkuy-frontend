@@ -6,20 +6,33 @@ import { api } from "../../services/api";
 import { socket } from "../../services/socket";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { BiSearch } from "react-icons/bi";
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
   const [status, setStatus] = useState("");
+  const [search, setSearch] = useState("");
   const [loadingCode, setLoadingCode] = useState(null);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [
+    debouncedSearch,
+    setDebouncedSearch,
+  ] = useState("");
 
   const navigate = useNavigate();
 
   const notifSound = new Audio(
     "/sound/ding.mp3"
   );
+
+  const handleSearch = async (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      fetchOrders();
+    }
+  }
 
   const fetchOrders = async () => {
     try {
@@ -36,6 +49,13 @@ export default function Orders() {
           "status",
           status
         );
+      }
+
+      if (search) {
+        params.append(
+          "search",
+          search
+        )
       }
 
       const res = await api.get(
@@ -70,12 +90,21 @@ export default function Orders() {
   };
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  useEffect(() => {
     fetchOrders();
+
     const interval = setInterval(fetchOrders, 5000); // 🔄 polling
     return () => {
       clearInterval(interval);
     }
-  }, [status, page]);
+  }, [status, page, debouncedSearch]);
 
   useEffect(() => {
     socket.emit("join-admin-room");
@@ -140,12 +169,41 @@ export default function Orders() {
   };
 
   return (
-    <div className="p-4 bg-gray-50 rounded-xl pb-24">
-      <h1 className="text-xl font-bold text-left mb-4">Pesanan</h1>
+    <div className="bg-gray-50 rounded-xl pb-24">
+      <div className="sticky p-4 rounded-xl top-0 z-10 bg-gray-50 ">
+        <h1 className="text-xl font-bold text-left mb-4">Pesanan</h1>
+        {/* Search */}
+        <div className="relative mb-4">
+          <BiSearch
+            size={18}
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+          />
 
-      <StatusTabs value={status} onChange={setStatus} setOrders={setOrders} setPage={setPage} />
+          <input
+            type="text"
+            placeholder="Cari Nama / No.HP ..."
+            value={search}
+            onKeyDown={handleSearch}
+            onChange={(e) => {
+              setSearch(e.target.value)
+            }}
+            className="
+                      w-full
+                      bg-white
+                      border border-gray-200
+                      rounded-2xl
+                      pl-11 pr-4 py-3
+                      outline-none
+                      text-sm
+                      shadow-sm
+                    "
+          />
+        </div>
+        <StatusTabs value={status} onChange={setStatus} setOrders={setOrders} setPage={setPage} />
+      </div>
 
-      <div className="mt-4 space-y-3">
+
+      <div className=" p-4 space-y-3">
         {loading && <p className="text-center text-gray-400">Loading...</p>}
 
         {!loading && orders.length === 0 && (
@@ -160,17 +218,17 @@ export default function Orders() {
             onAction={handleAction}
           />
         ))}
+        {hasMore && (
+          <button
+            onClick={() =>
+              setPage((prev) => prev + 1)
+            }
+            className="mt-4 w-full bg-orange-500 text-white rounded-2xl py-3"
+          >
+            Selanjutnya
+          </button>
+        )}
       </div>
-      {hasMore && (
-        <button
-          onClick={() =>
-            setPage((prev) => prev + 1)
-          }
-          className="mt-4 w-full bg-orange-500 text-white rounded-2xl py-3"
-        >
-          Selanjutnya
-        </button>
-      )}
     </div>
   );
 }

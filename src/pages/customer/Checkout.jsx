@@ -112,7 +112,7 @@ export default function Checkout() {
           </label>
 
           <input
-            className="shadow-sm ease-in-out transition-all outline-none focus:ring-2 focus:ring-orange-500 focus:border-white p-2 border-gray-300 rounded-lg"
+            className="shadow-md ring-1 ring-orange-200 shadow-orange-100 ease-in-out transition-all outline-none focus:ring-2 focus:ring-orange-500 focus:border-white p-2 border-gray-300 rounded-lg"
             placeholder="Masukkan nama..."
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -122,7 +122,7 @@ export default function Checkout() {
           </label>
 
           <input
-            className="shadow-sm ease-in-out transition-all outline-none focus:ring-2 focus:ring-orange-500 focus:border-white p-2 border-gray-300 rounded-lg"
+            className="shadow-md ring-1 ring-orange-200 shadow-orange-100 ease-in-out transition-all outline-none focus:ring-2 focus:ring-orange-500 focus:border-white p-2 border-gray-300 rounded-lg"
             placeholder="Masukkan Nomor..."
             value={form.phone}
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
@@ -136,19 +136,24 @@ export default function Checkout() {
             onChange={(e) =>
               setForm({ ...form, deliveryMethod: e.target.value })
             }
-            className="w-full p-3 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-white"
+            className="w-full ring-1 ring-orange-200 shadow-orange-100 p-3 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-white"
           >
             <option value="pickup">Ambil Sendiri</option>
             <option value="delivery">Diantar</option>
           </select>
 
           {form.deliveryMethod === "delivery" && (
-            <input
-              className="shadow-sm ease-in-out transition-all outline-none focus:ring-2 focus:ring-orange-500 focus:border-white p-2 border-gray-300 rounded-lg"
-              placeholder="Alamat (opsional)"
-              value={form.address}
-              onChange={(e) => setForm({ ...form, address: e.target.value })}
-            />
+            <>
+              <label className="block text-sm font-medium text-gray-700 mt-1">
+                Alamat
+              </label>
+              <input
+                className="shadow-md ring-1 ring-orange-200 shadow-orange-100 ease-in-out transition-all outline-none focus:ring-2 focus:ring-orange-500 focus:border-white p-2 border-gray-300 rounded-lg"
+                placeholder="Alamat (opsional)"
+                value={form.address}
+                onChange={(e) => setForm({ ...form, address: e.target.value })}
+              />
+            </>
           )}
           <label className="block text-sm font-medium text-gray-700 mt-1">
             Metode Pembayaran
@@ -159,7 +164,7 @@ export default function Checkout() {
             onChange={(e) =>
               setForm({ ...form, paymentMethod: e.target.value })
             }
-            className="w-full p-3 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-white"
+            className="w-full ring-1 ring-orange-200 shadow-orange-100 p-3 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-white"
           >
             <option value="qris">QRIS / E-Wallet</option>
             <option value="cash">Bayar Ditempat</option>
@@ -170,7 +175,7 @@ export default function Checkout() {
               Jadwal Pengambilan
             </label>
             <select
-              className="shadow-sm ease-in-out transition-all outline-none focus:ring-2 focus:ring-orange-500 focus:border-white p-2 border-gray-300 rounded-lg"
+              className="shadow-md ring-1 ring-orange-200 shadow-orange-100 ease-in-out transition-all outline-none focus:ring-2 focus:ring-orange-500 focus:border-white p-2 border-gray-300 rounded-lg"
               value={form.schedule}
               onChange={(e) => setForm({ ...form, schedule: e.target.value })}
             >
@@ -186,7 +191,7 @@ export default function Checkout() {
               </label>
               <input
                 type="datetime-local"
-                className="shadow-sm ease-in-out transition-all outline-none focus:ring-2 focus:ring-orange-500 focus:border-white p-2 border-gray-300 rounded-lg"
+                className="shadow-md ring-1 ring-orange-200 shadow-orange-100 ease-in-out transition-all outline-none focus:ring-2 focus:ring-orange-500 focus:border-white p-2 border-gray-300 rounded-lg"
                 value={form.scheduleDateTime}
                 onChange={(e) =>
                   setForm({ ...form, scheduleDateTime: e.target.value })
@@ -196,7 +201,7 @@ export default function Checkout() {
           )}
 
           <textarea
-            className="shadow-sm ease-in-out transition-all outline-none focus:ring-2 focus:ring-orange-500 focus:border-white p-2 h-24 border-gray-300 rounded-lg"
+            className="shadow-md ring-1 ring-orange-200 shadow-orange-100 ease-in-out transition-all outline-none focus:ring-2 focus:ring-orange-500 focus:border-white p-2 h-24 border-gray-300 rounded-lg"
             placeholder="Catatan (opsional)"
             value={form.notes}
             onChange={(e) => setForm({ ...form, notes: e.target.value })}
@@ -206,7 +211,7 @@ export default function Checkout() {
           {cart.map((item) => (
             <div
               key={item.id}
-              className="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm mb-3"
+              className="flex ring-1 ring-orange-200 shadow-orange-100 justify-between items-center bg-white p-4 rounded-xl shadow-sm mb-3"
             >
               <div>
                 <img

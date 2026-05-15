@@ -82,9 +82,7 @@ export default function ProductForm({ product = null, onClose, onSuccess }) {
           formData.append("imageUrl", form.imageUrl);
         }
       }
-
-      console.log("formData", ...formData.entries());
-
+      
       if (isEdit) {
         await api.put(`/products/${product.id}`, formData);
       } else {

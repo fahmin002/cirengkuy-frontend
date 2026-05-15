@@ -6,12 +6,14 @@ export default function ProductCard({ product, onEdit }) {
   return (
     <div
       className="
-        bg-white
         rounded-3xl
         p-4
+        ring-1
+        ring-orange-200
+        shadow-orange-100
         shadow-sm
-        border border-gray-100
-      "
+        bg-white
+        "
     >
       <div className="flex items-start gap-4">
         {/* Image */}

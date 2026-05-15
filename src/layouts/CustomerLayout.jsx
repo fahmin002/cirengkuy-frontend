@@ -1,22 +1,38 @@
 import { AiFillHome, AiFillShopping, AiOutlineHome, AiOutlineShoppingCart, AiOutlineUser } from 'react-icons/ai';
 import { FaRegUser, FaUser } from 'react-icons/fa';
 import { HiHome, HiMiniUserCircle, HiOutlineHome, HiOutlineShoppingCart, HiOutlineUserCircle, HiShoppingCart } from 'react-icons/hi2';
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { MdOutlineShoppingCartCheckout, MdShoppingCartCheckout } from 'react-icons/md';
 import { PiClipboardDuotone, PiClipboardFill, PiClipboardText } from 'react-icons/pi';
+import { useEffect, useState } from 'react';
+import { BsDatabaseFillLock, BsDatabaseLock } from 'react-icons/bs';
 
 export default function CustomerLayout() {
   const location = useLocation();
   const { cart } = useCart();
   const totalItems = cart.reduce((acc, item) => acc + item.qty, 0);
-
+  const [isAdmin, setIsAdmin] = useState(false);
+  const navigate = useNavigate();
+  useEffect(() => {
+    // Check guest udh pernah buka app, kalo belum arahkan ke landing page
+    const isFirstVisit = !localStorage.getItem("visited");
+    if (isFirstVisit) {
+      localStorage.setItem("visited", "true");
+      navigate("/landing");
+    }
+    const token = localStorage.getItem("token");
+    // cek apakah admin
+    if (token) {
+      setIsAdmin(true);
+    }
+  })
   return (
     <div>
       {/* Navbar */}
       {/* Bottom Navigation like mobile app */}
       <nav
-        className='fixed rounded-t-4xl shadow-xl bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 flex justify-center z-10'
+        className='fixed rounded-t-4xl shadow-xl ring-1 ring-orange-200 shadow-orange-200 bottom-0 left-0 right-0 bg-white p-4 flex justify-center z-10'
       >
         <div className='flex justify-around w-full ease-in-out duration-300 max-w-md'>
           {/* Home */}
@@ -61,7 +77,7 @@ export default function CustomerLayout() {
               </div>
             )}
           </Link>
-          {/* Profile */}
+          {/* Orders */}
           <Link to="/orders"
           >
             {location.pathname === '/orders' ? (
@@ -76,6 +92,23 @@ export default function CustomerLayout() {
               </div>
             )}
           </Link>
+          {/* Admin */}
+          {isAdmin && (
+            <Link to="/admin"
+            >
+              {location.pathname === '/admin' ? (
+                <div className='flex flex-col items-center text-orange-500 w-12 h-12'>
+                  <BsDatabaseFillLock size={40} />
+                  <span className='font-semibold'>Admin</span>
+                </div>
+              ) : (
+                <div className='flex flex-col items-center w-12 h-12'>
+                  <BsDatabaseLock size={40} />
+                  <span className='font-semibold'>Admin</span>
+                </div>
+              )}
+            </Link>
+          )}
         </div>
       </nav>
 

@@ -111,23 +111,23 @@ export default function Orders() {
   }, [phone, status, page]);
 
   return (
-    <div className="p-4 bg-gray-50 rounded-xl">
+    <div className="bg-gray-50 rounded-xl">
       {/* Header */}
-      <div className="mb-5">
+      <div className="sticky p-4 rounded-xl top-0 z-10 bg-gray-50 ">
         <h1 className="text-2xl google-sans-flex-bold text-left font-bold">
           Pesanan Saya
         </h1>
+      <StatusTabs setOrders={setOrders} setPage={setPage} value={status} onChange={setStatus} />
       </div>
 
-      <StatusTabs setOrders={setOrders} setPage={setPage} value={status} onChange={setStatus} />
-      {loading && <p className="text-center text-gray-400">Loading...</p>}
+      {loading || phone === null && <p className="text-center text-gray-400">Loading...</p>}
 
-      {!loading && orders.length === 0 && (
-        <p className="text-center text-gray-400">Belum ada pesanan</p>
+      {!loading || orders.length === 0 && (
+        <p className="text-center mt-4 text-gray-400">Belum ada pesanan</p>
       )}
 
       {/* Order List */}
-      <div className="mt-5 space-y-3 mb-24">
+      <div className="mt-5 px-4 space-y-3">
         {orders.map((order) => (
           <button
             key={order.id}

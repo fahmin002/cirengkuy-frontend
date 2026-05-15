@@ -54,16 +54,16 @@ export default function Products() {
   }, [products, search, filter]);
 
   return (
-    <div className="p-4 bg-gray-50 rounded-xl pb-24">
+    <div className="bg-gray-50 rounded-xl pb-24">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-gray-50 ">
+      <div className="sticky p-4 rounded-xl top-0 z-10 bg-gray-50 ">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl text-left font-bold text-gray-900">
               Produk
             </h1>
 
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-left text-gray-500 mt-1">
               Kelola menu dan stok produk
             </p>
           </div>
@@ -172,7 +172,7 @@ export default function Products() {
         )}
 
         {/* Product List */}
-        <div className="space-y-3">
+        <div className="space-y-3 px-4">
           {filteredProducts.map((product) => (
             <ProductCard
               key={product.id}
