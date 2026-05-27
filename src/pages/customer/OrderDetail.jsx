@@ -174,7 +174,7 @@ export default function OrderDetail() {
             <div>
               <p className="text-sm text-gray-500">Detail Pesanan</p>
               <div className="text-2xl font-black text-black">
-                {`CRK-${formatOrderCode(order.code)}`}
+                {`CKUY-${formatOrderCode(order.code)}`}
               </div>
             </div>
           </div>
