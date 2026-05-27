@@ -8,3 +8,4 @@
   to = "https://difficult-anatomy-donut.ngrok-free.dev/uploads/:splat"
   status = 200
   force = true
+  headers = {X-From = "Netlify"}
