@@ -149,7 +149,7 @@ function Home() {
           >
             {/* <div className=" bg-gray-200 rounded-full relative bottom-10"  /> */}
             <img
-              src={`${p.imageUrl}`}
+              src={`${window.location.origin}${p.imageUrl}`}
               className="rounded-xl w-fit"
               alt=""
               srcSet=""

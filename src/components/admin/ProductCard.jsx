@@ -28,7 +28,7 @@ export default function ProductCard({ product, onEdit }) {
         >
           {product.imageUrl ? (
             <img
-              src={`${product.imageUrl}`}
+              src={`${window.location.origin}${product.imageUrl}`}
               alt={product.name}
               className="w-full h-full object-cover"
             />

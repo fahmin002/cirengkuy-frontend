@@ -248,7 +248,7 @@ export default function ProductForm({ product = null, onClose, onSuccess }) {
           {isEdit === true && previewImage !== null ? (
             <div className="mt-2">
               <img
-                src={`${previewImage}`}
+                src={`${window.location.origin}${previewImage}`}
                 alt="Preview"
                 className="
                 w-full h-48

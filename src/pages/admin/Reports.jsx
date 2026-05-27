@@ -224,7 +224,7 @@ export default function Reports() {
               >
                 <div className="flex items-center gap-3">
                   <img
-                    src={`${import.meta.env.VITE_BACKEND_URL}${product.image}`}
+                    src={`${window.location.origin}${product.image}`}
                     className="
                         w-14 h-14
                         rounded-xl
