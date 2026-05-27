@@ -248,7 +248,7 @@ export default function ProductForm({ product = null, onClose, onSuccess }) {
           {isEdit === true && previewImage !== null ? (
             <div className="mt-2">
               <img
-                src={`${import.meta.env.VITE_BACKEND_URL}${previewImage}`}
+                src={`${previewImage}`}
                 alt="Preview"
                 className="
                 w-full h-48

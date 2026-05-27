@@ -28,7 +28,7 @@ export default function ProductCard({ product, onEdit }) {
         >
           {product.imageUrl ? (
             <img
-              src={`${import.meta.env.VITE_BACKEND_URL}${product.imageUrl}`}
+              src={`${product.imageUrl}`}
               alt={product.name}
               className="w-full h-full object-cover"
             />

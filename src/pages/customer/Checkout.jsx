@@ -191,7 +191,7 @@ export default function Checkout() {
             >
               <div className="flex-col flex justify-between h-full gap-4">
                 <img
-                  src={`${import.meta.env.VITE_BACKEND_URL}${item.imageUrl}`}
+                  src={`${item.imageUrl}`}
                   className="rounded-md object-cover w-24 shadow-md"
                   alt=""
                   srcSet=""

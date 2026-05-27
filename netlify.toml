@@ -3,3 +3,8 @@
   to = "https://difficult-anatomy-donut.ngrok-free.dev/api/:splat"
   status = 200
   force = true
+[[redirects]]
+  from = "/uploads/*"
+  to = "https://difficult-anatomy-donut.ngrok-free.dev/uploads/:splat"
+  status = 200
+  force = true
