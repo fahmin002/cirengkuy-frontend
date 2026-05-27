@@ -9,7 +9,6 @@ import Orders from "../pages/admin/Orders";
 import Home from "../pages/customer/Home";
 import Checkout from "../pages/customer/Checkout";
 import Profile from "../pages/customer/Profile";
-import LandingPage from "../pages/customer/LandingPage";
 import PaymentSuccess from "../pages/customer/PaymentSuccess";
 import * as CustomerOrders from "../pages/customer/Orders";
 import OrderDetail from "../pages/customer/OrderDetail";
@@ -20,13 +19,13 @@ import ProtectedRoute from "./ProtectedRoutes";
 import GuestRoute from "./GuestRoute";
 import NotFound from "../pages/NotFound";
 import Reports from "../pages/admin/Reports";
+import OrderSuccess from "../pages/customer/PaymentSuccess";
 
 export default function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
         {/* CUSTOMER ZONE */}
-        <Route path="/landing" element={<LandingPage />} />
         <Route element={<CustomerLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/checkout" element={<Checkout />} />

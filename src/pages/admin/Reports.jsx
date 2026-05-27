@@ -34,7 +34,7 @@ export default function Reports() {
 
   const fetchRevenueChart = async () => {
     try {
-      const res = await api.get("/reports/revenue-chart");
+      const res = await api.get("/reports/admin/revenue-chart");
       setChartData(res.data);
     } catch (err) {
       console.error(err);
@@ -48,7 +48,7 @@ export default function Reports() {
     try {
       setLoading(true);
 
-      const res = await api.get("/reports/revenue-summary");
+      const res = await api.get("/reports/admin/revenue-summary");
       setSummary(res.data);
     } catch (err) {
       console.error(err);
@@ -63,7 +63,7 @@ export default function Reports() {
     try {
       setLoading(true);
 
-      const res = await api.get("/reports/top-products");
+      const res = await api.get("/reports/admin/top-products");
       setProducts(res.data);
     } catch (err) {
       console.error(err);

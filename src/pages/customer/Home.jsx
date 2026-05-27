@@ -2,10 +2,13 @@ import { useEffect, useState, useRef } from "react";
 import { api } from "../../services/api";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
+import { toast } from "sonner";
+import { FaCartPlus } from "react-icons/fa";
 
 function Home() {
   const [products, setProducts] = useState([]);
-  const { addToCart, cart, updateQty } = useCart();
+  const { addToCart, cart, updateQty, removeFromCart } = useCart();
+  const [storeOpen, setStoreOpen] = useState(null);
   const navigate = useNavigate();
   // helper: cek qty item di cart
   const getQty = (productId) => {
@@ -13,17 +16,56 @@ function Home() {
     return item ? item.qty : 0;
   };
 
-  useEffect(() => {
-    async function fetchProducts() {
-      try {
-        const res = await api.get("/products/client");
-        setProducts(res.data || []);
-      } catch (err) {
-        console.error("Failed to fetch products:", err);
-      }
+  async function fetchSetting() {
+
+    try {
+
+      const res =
+        await api.get(
+          "/settings/admin/store"
+        );
+
+      const open =
+        res.data.storeOpen;
+      setStoreOpen(open);
+      return open;
+
+    } catch (error) {
+
+      console.error(error);
+
+      return false;
+
     }
 
-    fetchProducts();
+  }
+
+  async function fetchProducts() {
+    try {
+      const res =
+        await api.get(
+          "/products/customer"
+        );
+      setProducts(
+        res.data || []
+      );
+    } catch (err) {
+      toast.error("Terjadi kesalahan!");
+    }
+  }
+  useEffect(() => {
+
+    async function loadData() {
+
+      const isOpen =
+        await fetchSetting();
+
+      await fetchProducts();
+
+    }
+
+    loadData();
+
   }, []);
 
   const handleUpdateQty = (id, qty) => {
@@ -31,6 +73,7 @@ function Home() {
     const product = products.find((p) => p.id === id);
     if (product && qty > product.stock) {
       updateQty(id, product.stock);
+      toast.error("Jumlah produk melebihi stok!")
     } else {
       updateQty(id, qty);
     }
@@ -38,6 +81,40 @@ function Home() {
 
   return (
     <div className="min-h-screen p-4 rounded-2xl bg-gray-50 pb-24">
+      {!storeOpen && (
+        <div className="p-4">
+
+          <div
+            className="
+                bg-red-50
+                border
+                border-red-200
+                rounded-2xl
+                p-6
+                text-center
+              "
+          >
+
+            <h1
+              className="
+                  text-xl
+                  font-bold
+                  text-red-600
+                  mb-2
+                "
+            >
+              🔴 Warung Sedang Tutup
+            </h1>
+
+            <p className="text-gray-600">
+              Produk sementara tidak tersedia
+            </p>
+
+          </div>
+
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex justify-between items-center mb-2">
         <div className="flex flex-col justify-center items-start">
@@ -62,13 +139,7 @@ function Home() {
         </div>
       </div>
 
-      {/* Promo Banner */}
-      {/* <div className="bg-orange-500 shadow-lg text-white p-4 rounded-2xl mb-4">
-        <h2 className="text-lg font-semibold">Jumat Berkah🔥</h2>
-        <p className="text-sm">Gas jajan cireng sekarang!</p>
-      </div> */}
-
-        <div className="text-left mb-4 text-lg google-sans-flex-bold">List produk hari ini!</div>
+      <div className="text-left mb-4 text-lg google-sans-flex-bold">List produk hari ini!</div>
       {/* Product Grid */}
       <div className="grid grid-cols-2 gap-4">
         {products.map((p) => (
@@ -99,8 +170,31 @@ function Home() {
             {getQty(p.id) === 0 ? (
               <div className="mt-4">
                 <button
+                  disabled={!storeOpen}
                   onClick={() => addToCart(p)}
-                  className="bg-orange-500 text-white py-2 px-4 rounded-xl font-semibold shadow-lg"
+                  className="bg-orange-500 flex flex-col items-center disabled:bg-orange-300 text-white py-2 px-4 rounded-xl font-semibold shadow-lg"
+                >
+                  <span>Tambahkan</span>
+                  <FaCartPlus />
+                </button>
+              </div>
+            ) : (
+              <div className="mt-4">
+                <button
+                  disabled={!storeOpen}
+                  onClick={() => removeFromCart(p.id)}
+                  className="bg-white ring-orange-500 ring-1 text-orange-500 disabled:bg-orange-300 py-2 px-4 rounded-xl font-semibold shadow-lg"
+                >
+                  Hapus
+                </button>
+              </div>
+            )}
+            {/* {getQty(p.id) === 0 ? (
+              <div className="mt-4">
+                <button
+                  disabled={!storeOpen}
+                  onClick={() => addToCart(p)}
+                  className="bg-orange-500 disabled:bg-orange-300 text-white py-2 px-4 rounded-xl font-semibold shadow-lg"
                 >
                   Masuk Keranjang
                 </button>
@@ -108,7 +202,7 @@ function Home() {
             ) : (
               <div className="flex mt-4 flex-row justify-between items-center">
                 <button
-                  onClick={() => handleUpdateQty(p.id, getQty(p.id) - 1)}
+                  onClick={() => handleUpdateQty(p.id, getQty(p.id) - (getQty(p.id) % 5 === 0 ? 5 : 4))}
                   className="w-8 h-8 bg-gray-200 rounded-full"
                 >
                   -
@@ -124,27 +218,27 @@ function Home() {
                 />
 
                 <button
-                  onClick={() => handleUpdateQty(p.id, getQty(p.id) + 1)}
+                  onClick={() => handleUpdateQty(p.id, getQty(p.id) + (getQty(p.id) % 5 === 0 ? 5 : 4))}
                   className="w-8 h-8 bg-orange-500 text-white rounded-full"
                 >
                   +
                 </button>
               </div>
-            )}
+            )} */}
           </div>
         ))}
       </div>
-      <div className="w-fit mt-4 bg-linear-to-tl from-orange-300 to-orange-50 p-4 rounded-xl ring-1 ring-orange-100 shadow-lg shadow-orange-100"> 
-      <div className="google-sans-flex-bold text-lg text-left">Lokasi</div>
-      <div className="flex flex-col text-left">
-        <span className="text-sm text-slate-500">-7.600585, 109.508192</span>
-        <span className="text-sm">
-          RT002/RW001, <br />Des/Kel. Semanding, Kec. Gombong,<br /> Kabupaten Kebumen, Jawa Tengah
-        </span>
+      <div className="w-full mt-4 bg-linear-to-tl from-orange-300 to-orange-50 p-4 rounded-xl ring-1 ring-orange-100 shadow-lg shadow-orange-100">
+        <div className="google-sans-flex-bold text-lg text-left">Lokasi</div>
+        <div className="flex flex-col text-left">
+          <span className="text-sm text-slate-500">-7.600585, 109.508192</span>
+          <span className="text-sm">
+            RT002/RW001, <br />Des/Kel. Semanding, Kec. Gombong,<br /> Kabupaten Kebumen, Jawa Tengah
+          </span>
+        </div>
+        <iframe className="w-[100%] mt-4 rounded-xl ring-1 ring-orange-200 shadow-lg shadow-orange-100" src="https://www.google.com/maps/embed?pb=!4v1778829489057!6m8!1m7!1sIR4dut8LB3Z14vdwjouIZw!2m2!1d-7.600506425111304!2d109.5083138270458!3f242.5077800674391!4f-10.977941666183739!5f0.7820865974627469" allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
       </div>
-      <iframe className="w-[100%] mt-4 rounded-xl ring-1 ring-orange-200 shadow-lg shadow-orange-100" src="https://www.google.com/maps/embed?pb=!4v1778829489057!6m8!1m7!1sIR4dut8LB3Z14vdwjouIZw!2m2!1d-7.600506425111304!2d109.5083138270458!3f242.5077800674391!4f-10.977941666183739!5f0.7820865974627469" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-      </div>
-    </div>
+    </div >
   );
 }
 

@@ -20,7 +20,7 @@ export default function Products() {
     try {
       setLoading(true);
 
-      const res = await api.get("/products");
+      const res = await api.get("/products/admin");
 
       setProducts(res.data || []);
     } catch (err) {

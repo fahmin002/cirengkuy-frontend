@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 export default function Dashboard() {
   const [stats, setStats] = useState([]);
   const [recentOrders, setRecentOrders] = useState([]);
+  const [storeOpen, setStoreOpen] = useState(false);
   const statusStyle = {
     pending: "bg-yellow-50 ring-1 shadow-yellow-100 ring-yellow-200",
 
@@ -44,8 +45,8 @@ export default function Dashboard() {
   // Fetch stats dan recent orders dari API
   async function fetchData() {
     try {
-      const statsResponse = await api.get("/orders/stats");
-      const ordersResponse = await api.get("/orders/recent-orders");
+      const statsResponse = await api.get("/orders/admin/stats");
+      const ordersResponse = await api.get("/orders/admin/recent-orders");
 
       const statsMapping = {
         revenue: {
@@ -95,8 +96,46 @@ export default function Dashboard() {
     }
   }
 
+  async function fetchSetting() {
+    try {
+      const storeStatus = await api.get("/settings/admin/store");
+      setStoreOpen(storeStatus.data.storeOpen);
+    } catch (error) {
+      console.error("Error fetching settings data:", error);
+    }
+  }
+  async function toggleStore() {
+
+    try {
+
+      const res =
+        await api.patch(
+          "/settings/admin/store",
+          {
+            storeOpen:
+              !storeOpen,
+          }
+        );
+
+
+      setStoreOpen(
+        res.data.storeOpen
+      );
+
+    } catch (err) {
+
+      console.error(err);
+
+    }
+
+  };
+
   useEffect(() => {
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    fetchSetting();
   }, []);
   return (
     <div className="min-h-screen rounded-2xl bg-gray-50 pb-24">
@@ -111,6 +150,50 @@ export default function Dashboard() {
             Pantau operasional CirengKuy hari ini
           </p>
         </div>
+      <div
+        className="bg-white p-4 mt-2 rounded-2xl flex shadow-sm flex items-center justify-between mb-4">
+        <div className="">
+          <h2
+            className={`font-bold text-lg 
+              ${storeOpen
+                ? "text-green-600"
+                : "text-red-500"
+              }
+            `}>
+            {
+              storeOpen
+                ? "🟢 Warung Sedang Buka"
+                : "🔴 Warung Sedang Tutup"
+            }
+          </h2>
+
+        </div>
+        <div className="px-4">
+          <button
+            onClick={toggleStore}
+            className={`
+              px-4 py-2
+              rounded-xl
+              text-white
+              font-medium
+              transition
+              active:scale-95
+
+            ${storeOpen
+                ? "bg-red-500"
+                : "bg-green-500"
+              }
+          `}>
+            {
+              storeOpen
+                ? "Tutup Warung"
+                : "Buka Warung"
+            }
+
+          </button>
+        </div>
+
+      </div>
       </div>
 
       {/* Stats */}

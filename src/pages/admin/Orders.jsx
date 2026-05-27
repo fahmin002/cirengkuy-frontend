@@ -59,7 +59,7 @@ export default function Orders() {
       }
 
       const res = await api.get(
-        `/orders?${params.toString()}`
+        `/orders/admin?${params.toString()}`
       );
 
       setOrders((prev) => {
@@ -159,7 +159,7 @@ export default function Orders() {
   const handleAction = async (code, nextStatus) => {
     try {
       setLoadingCode(code);
-      await api.patch(`/orders/${code}/status`, { status: nextStatus });
+      await api.patch(`/orders/admin/code/${code}/status`, { status: nextStatus });
       await fetchOrders();
     } catch (err) {
       alert(err.message);

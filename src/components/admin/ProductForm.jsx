@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../../services/api";
 import { BiX } from "react-icons/bi";
+import { toast } from "sonner";
 
 export default function ProductForm({ product = null, onClose, onSuccess }) {
   const isEdit = !!product;
@@ -84,9 +85,11 @@ export default function ProductForm({ product = null, onClose, onSuccess }) {
       }
       
       if (isEdit) {
-        await api.put(`/products/${product.id}`, formData);
+        await api.put(`/products/admin/${product.id}`, formData);
+        toast.success("Detail produk telah diubah")
       } else {
-        await api.post(`/products`, formData);
+        await api.post(`/products/admin`, formData);
+        toast.success("Produk berhasil ditambahkan")
       }
 
       onSuccess?.();

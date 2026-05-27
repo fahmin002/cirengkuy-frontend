@@ -6,12 +6,13 @@ import { api } from "../../services/api";
 import { useEffect } from "react";
 import StatusTabs from "../../components/customer/StatusTabs";
 import { formatDateTime } from "../../utils/date";
+import { toast } from "sonner";
 
 export default function Orders() {
   const statusMap = {
     pending: "Menunggu Pembayaran",
     paid: "Sudah Dibayar",
-    cooking: "Sedang Dimasak",
+    cooking: "Sedang Disiapkan",
     ready: "Siap Diambil/Diantar",
     completed: "Selesai",
     cancelled: "Dibatalkan",
@@ -40,6 +41,7 @@ export default function Orders() {
 
   const customer = localStorage.getItem("customer");
   const phone = customer ? JSON.parse(customer).phone : null;
+  const name = customer ? JSON.parse(customer).name : null;
 
   const [orders, setOrders] = useState([]);
   const [status, setStatus] = useState("");
@@ -54,11 +56,13 @@ export default function Orders() {
   const navigate = useNavigate();
 
   useEffect(() => {
+
     const handleSearch = async () => {
       setLoading(true);
 
-      if (!phone) {
+      if (!phone || phone === null) {
         setOrders([]);
+        toast.error("Pesanan tidak ditemukan")
         return;
       }
 
@@ -77,7 +81,7 @@ export default function Orders() {
         }
 
         const res = await api.get(
-          `/orders/customer/${phone}?${params.toString()}`
+          `/orders/customer/phone/${phone}?${params.toString()}`
         );
 
 
@@ -102,7 +106,7 @@ export default function Orders() {
           res.pagination.totalPages
         )
       } catch (err) {
-        alert(err.message);
+        toast.error(err.message);
       } finally {
         setLoading(false);
       }
@@ -111,13 +115,13 @@ export default function Orders() {
   }, [phone, status, page]);
 
   return (
-    <div className="bg-gray-50 rounded-xl">
+    <div className="bg-gray-50 pb-24 rounded-xl">
       {/* Header */}
       <div className="sticky p-4 rounded-xl top-0 z-10 bg-gray-50 ">
         <h1 className="text-2xl google-sans-flex-bold text-left font-bold">
-          Pesanan Saya
+          Pesanan {name}
         </h1>
-      <StatusTabs setOrders={setOrders} setPage={setPage} value={status} onChange={setStatus} />
+        <StatusTabs setOrders={setOrders} setPage={setPage} value={status} onChange={setStatus} />
       </div>
 
       {loading || phone === null && <p className="text-center text-gray-400">Loading...</p>}

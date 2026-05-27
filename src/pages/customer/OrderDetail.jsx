@@ -2,53 +2,46 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { api } from "../../services/api";
 import { formatDateTime } from "../../utils/date";
-import { HiArrowLeft } from "react-icons/hi";
 import { BiArrowBack } from "react-icons/bi";
 import { socket } from "../../services/socket";
 import { toast } from "sonner";
+
 export default function OrderDetail() {
   const { id } = useParams();
-  const code = id; // alias untuk readability
+  const code = id;
   const [order, setOrder] = useState(null);
   const navigate = useNavigate();
+
   const statusMap = {
     pending: "Menunggu Pembayaran",
     paid: "Sudah Dibayar",
-    cooking: "Sedang Dimasak",
+    cooking: "Sedang Disiapkan",
     ready: "Siap Diambil/Diantar",
     completed: "Selesai",
     cancelled: "Dibatalkan",
   };
-  const statusColor = {
+
+  const statusBadgeColor = {
+    pending: "bg-yellow-100 text-yellow-700",
+    paid: "bg-blue-100 text-blue-700",
+    cooking: "bg-orange-100 text-orange-700",
+    ready: "bg-green-100 text-green-700",
+    completed: "bg-gray-100 text-gray-700",
+    cancelled: "bg-red-100 text-red-700",
+  };
+
+  const statusDotColor = {
     pending: "bg-yellow-500",
     paid: "bg-blue-500",
     cooking: "bg-orange-500",
     ready: "bg-green-500",
-    completed: "bg-gray-500",
+    completed: "bg-green-500",
     cancelled: "bg-red-500",
   };
-  const statusStyle = {
-    pending:
-      "bg-yellow-50 ring-1 shadow-yellow-100 ring-yellow-200",
 
-    paid:
-      "bg-blue-50 ring-1 ring-blue-200 shadow-blue-100",
-
-    cooking:
-      "bg-orange-50 ring-1 ring-orange-200 shadow-orange-100",
-
-    ready:
-      "bg-green-50 shadow-green-100 ring-1 ring-green-200",
-
-    completed:
-      "bg-gray-100 ring-1 ring-gray-200 shadow-gray-100 opacity-80",
-
-    cancelled:
-      "bg-red-50 ring-1 ring-red-200 shadow-red-100",
-  };
   const fetchOrder = async () => {
     try {
-      const res = await api.get(`/orders/${code}`);
+      const res = await api.get(`/orders/customer/code/${code}`);
       setOrder(res.data);
     } catch (err) {
       console.error(err);
@@ -56,32 +49,42 @@ export default function OrderDetail() {
   };
 
   const handleCancelButton = async () => {
-    try {
-      if (order.status === "cancelled") return;
-
-      await api.patch(`/orders/${order.id}/cancel`);
-      navigate("/orders");
-    } catch (err) {
-      console.error(err);
-    }
+    toast('Batalkan pesanan?', {
+      cancel: {
+        label: 'Tidak',
+        onClick: () => {
+          return
+        }
+      },
+      action: {
+        label: 'Ya',
+        onClick: async () => {
+          try {
+            if (order.status === "cancelled") return;
+            await api.patch(`/orders/customer/id/${order.id}/cancel`);
+          } catch (err) {
+            console.log(err)
+            toast.error("Pesanan tidak dapat dibatalkan");
+          }
+        },
+        actionButtonStyle: {
+          backgroundColor: "orange"
+        }
+      }
+    });
   };
 
-  const notifSound = new Audio(
-    "/sound/ding.mp3"
-  );
+  const notifSound = new Audio("/sound/ding.mp3");
 
   useEffect(() => {
     fetchOrder();
-    // 🔁 polling tiap 5 detik
     const interval = setInterval(fetchOrder, 5000);
 
     if (!code) return;
     const enableAudio = async () => {
       try {
         await notifSound.play();
-
         notifSound.pause();
-
         notifSound.currentTime = 0;
       } catch (err) {
         console.log("Audio belum diizinkan");
@@ -92,192 +95,262 @@ export default function OrderDetail() {
       once: true,
     });
 
-    socket.emit(
-      "join-order-room",
-      code
-    );
+    socket.emit("join-order-room", code);
 
-    socket.on(
-      "order-status-updated",
-      (data) => {
-        toast.success(`Pesanan ${statusMap[data.status]}`);
-        notifSound.currentTime = 0;
-
-        notifSound.play();
-        setOrder((prev) => ({
-          ...prev,
-          status: data.status,
-        }));
+    socket.on("order-status-updated", (data) => {
+      const toastMessage = `Pesanan ${statusMap[data.status]}`
+      if (data.msg) {
+        toast.error(toastMessage + data?.msg)
+      } else {
+        toast.success(toastMessage);
       }
-    );
+      notifSound.currentTime = 0;
+      notifSound.play();
+      setOrder((prev) => ({
+        ...prev,
+        status: data.status,
+      }));
+    });
+
     return () => {
       clearInterval(interval);
-      socket.off(
-        "order-status-updated"
-      );
+      socket.off("order-status-updated");
     }
   }, [code]);
 
-  if (!order) return <p className="p-4">Loading...</p>;
+  // Generate timeline steps based on order status
+  const getTimelineSteps = () => {
+    const steps = [
+      { label: "Pesanan Dibuat", time: order.createdAt ? formatDateTime(order.createdAt) : "", completed: true },
+    ];
+
+    if (order.paidAt) {
+      steps.push({ label: "Pembayaran Berhasil", time: formatDateTime(order.paidAt), completed: true });
+    }
+
+    if (order.status === "cooking" || order.status === "ready" || order.status === "completed") {
+      steps.push({ label: "Pesanan Diproses", time: "Sedang dimasak 🔥", completed: true, active: order.status === "cooking" });
+    }
+
+    if (order.status === "ready" || order.status === "completed") {
+      steps.push({ label: "Pesanan Siap", time: "Siap diambil/diantar", completed: true, active: order.status === "ready" });
+    }
+
+    if (order.status === "completed") {
+      steps.push({ label: "Pesanan Selesai", time: "Pesanan telah selesai", completed: true });
+    }
+
+    if (order.status === "cancelled") {
+      steps.push({ label: "Pesanan Dibatalkan", time: "Pesanan dibatalkan", completed: true, cancelled: true });
+    }
+
+    return steps;
+  };
+
+  const timelineSteps = order ? getTimelineSteps() : [];
+  const formatOrderCode = (uuid) => {
+    // Ambil 8 karakter pertama (atau sesuaikan)
+    return uuid.substring(0, 8).toUpperCase();
+  };
+  if (!order) return (
+    <div className="min-h-screen bg-gradient-to-b from-orange-500 via-yellow-300 to-yellow-100 flex items-center justify-center">
+      <p className="text-white text-xl font-bold">Loading...</p>
+    </div>
+  );
 
   return (
-    <div className={`rounded-3xl p-4 shadow-sm mb-24 ${statusStyle[order.status]}`}>
-      <div className="flex mb-4 items-center border-gray-200 gap-6">
-        {/* Tombol kembali */}
-        {/* <button onClick={() => navigate("/orders")} className="mb-2">
-          <HiArrowLeft className="text-2xl" />
-        </button> */}
-        <button
-          onClick={() => navigate("/orders")}
-          className="
-          
-          flex items-center gap-2
-          bg-white
-          border border-gray-100
-          shadow-sm
-          rounded-2xl
-          px-4 py-3
-          text-sm font-medium text-gray-700
-          active:scale-95
-          transition
-        "
-        >
-          <BiArrowBack size={18} />
-          Kembali
-        </button>
-        <h2 className="text-left google-sans-flex-bold">
-          Pesanan {order.customerName}
-        </h2>
-      </div>
+    <div className="pb-24 overflow-hidden rounded-xl shadow-2xl bg-gray-100 flex justify-center font-sans">
+      <div className="w-full border border-white/40 mx-4">
+        {/* Header */}
+        <div className="px-6 pt-8 pb-5">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate("/orders")}
+              className="w-10 h-10 rounded-full bg-white shadow text-xl flex items-center justify-center hover:bg-gray-50 active:scale-95 transition"
+            >
+              <BiArrowBack size={20} />
+            </button>
 
-      {/* Order Code */}
-      <div className="mb-4 text-left flex flex-row justify-between">
-        <p className="font-semibold">Kode Pesanan</p>
-        <span className="text-right">{order.code}</span>
-      </div>
-
-      {/* STATUS */}
-      <div className="mb-4 text-left flex flex-row justify-between">
-        <p className="text-sm text-gray-500">Status Pesanan</p>
-        <span
-          className={`px-3 py-1 rounded-full text-white text-sm
-          ${statusColor[order.status]}
-        `}
-        >
-          {statusMap[order.status]}
-        </span>
-      </div>
-
-      {/* Waktu pembayaran */}
-      {order.paidAt && (
-        <div className="mb-4 text-left flex flex-row justify-between">
-          <p className="text-sm text-gray-500">Waktu Pembayaran</p>
-          <span className="text-left">{formatDateTime(order.paidAt)}</span>
-        </div>
-      )}
-
-      {/* delivery Method */}
-      <div className="mb-4 text-left flex flex-row justify-between">
-        <p className="text-sm text-gray-500">Metode Pengiriman</p>
-        {/* Badge */}
-        <span
-          className={`px-3 py-1 rounded-full text-white text-sm
-          ${order.deliveryMethod === "pickup" ? "bg-orange-500" : "bg-sky-500"}
-        `}
-        >
-          {order.deliveryMethod === "pickup"
-            ? "Ambil di tempat"
-            : "Diantar ke alamat"}
-        </span>
-      </div>
-
-      {/* payment Method */}
-      <div className="mb-4 text-left flex flex-row justify-between">
-        <p className="text-sm text-gray-500">Metode Pembayaran</p>
-        {/* Badge */}
-        <span
-          className={`px-3 py-1 rounded-full text-white text-sm
-          ${order.paymentMethod === "qris" ? "bg-blue-500" : "bg-gray-500"}
-          `}
-        >
-          {order.paymentMethod === "qris" ? "QRIS" : "Cash"}
-        </span>
-      </div>
-      {/*Alamat */}
-      <div className="mb-4 flex items-center justify-between">
-        <p className="text-sm text-gray-500">Alamat Pengiriman</p>
-        <p className="text-right">{order.address}</p>
-      </div>
-
-      {/* Waktu Pengambilan */}
-      <div className="mb-4 flex items-center justify-between">
-        <p className="text-sm text-gray-500">Waktu Pengambilan</p>
-        <p className="">
-          {order.scheduledAt
-            ? `Diambil ${formatDateTime(order.pickupTime)}`
-            : `Ambil Sekarang`}
-        </p>
-      </div>
-      {/* ITEMS */}
-      <div className="space-y-3">
-        {order.OrderItem?.map((item) => (
-          <div
-            key={item.id}
-            className="flex justify-between bg-white p-3 rounded-xl shadow-sm"
-          >
             <div>
-              <p className="font-semibold">{item.Product.name}</p>
-              <p className="text-sm text-left text-gray-500">
-                {item.qty} x Rp {item.price}
-              </p>
+              <p className="text-sm text-gray-500">Detail Pesanan</p>
+              <div className="text-2xl font-black text-black">
+                {`CRK-${formatOrderCode(order.code)}`}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Status Card */}
+        <div className="px-4">
+          <div className="bg-white rounded-xl p-5 border border-orange-100 shadow-sm">
+            <div className="flex justify-between items-center">
+              <div className="text-left">
+                <p className="text-sm text-gray-500">Status Pesanan</p>
+                <h2 className="text-2xl font-black mt-1">
+                  {statusMap[order.status]}
+                </h2>
+              </div>
+
+              <div className={`px-4 py-2 rounded-2xl text-sm font-bold ${statusBadgeColor[order.status]}`}>
+                {order.status === "cooking" ? "Cooking" :
+                  order.status === "ready" ? "Ready" :
+                    order.status === "completed" ? "Done" :
+                      order.status === "cancelled" ? "Cancelled" :
+                        order.status === "paid" ? "Paid" : "Pending"}
+              </div>
             </div>
 
-            <div className="font-semibold">Rp {item.qty * item.price}</div>
+            {/* Timeline */}
+            <div className="mt-6 space-y-4">
+              {timelineSteps.map((step, index) => (
+                <div key={index} className={`flex gap-3 ${step.active === false && index !== 0 ? 'opacity-40' : ''}`}>
+                  <div
+                    className={`w-4 h-4 rounded-full mt-1 flex-shrink-0 ${step.cancelled
+                        ? 'bg-red-500'
+                        : step.completed
+                          ? step.active
+                            ? 'bg-orange-500'
+                            : 'bg-green-500'
+                          : 'bg-gray-300'
+                      }`}
+                  ></div>
+
+                  <div>
+                    <h3 className="font-bold">{step.label}</h3>
+                    <p className="text-sm text-gray-500">{step.time}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        ))}
-      </div>
+        </div>
 
-      {/* TOTAL */}
-      <div className="mt-6 text-lg font-bold">Total: Rp {order.total}</div>
+        {/* Customer Info */}
+        <div className="px-4 mt-4">
+          <div className="bg-white rounded-xl p-5 border border-orange-100 shadow-sm">
+            <h2 className="text-xl text-left font-black mb-4">Informasi Pemesan</h2>
 
+            <div className="space-y-3 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-500">Nama</span>
+                <span className="font-semibold">{order.customerName}</span>
+              </div>
 
-      {/* Jika paymentmethod cash, status otomatis paid*/}
-      {/* jika status paid/pending, masih bisa cancel untuk payement cash */}
-      {order.paymentMethod === "cash" &&
-        statusMap[order.status] === "Sudah Dibayar" && (
-          <button
-            onClick={handleCancelButton}
-            className="mt-4 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-colors"
-          >
-            Batalkan Pesanan
-          </button>
-        )}
+              {order.phone && (
+                <div className="flex justify-between">
+                  <span className="text-gray-500">WhatsApp</span>
+                  <span className="font-semibold">{order.phone}</span>
+                </div>
+              )}
 
-      {/* jika qris, dan belum menyelesaikan pembayaran */}
-      {statusMap[order.status] === "Menunggu Pembayaran" &&
-        order.paymentMethod === "qris" && (
-          <>
-            {/* expired datetime */}
-            <p className="p-4 text-sm text-gray-500">
-              Lakukan pembayaran sebelum: <br></br>
-              {formatDateTime(order.paymentExpiredAt)}
-            </p>
-            <p className="mt-2 text-sm text-gray-500">
-              <a
-                href={`${order.paymentUrl}`}
-                className="inline-block bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors"
+              <div className="flex justify-between">
+                <span className="text-gray-500">Metode Pembayaran</span>
+                <span className="font-semibold">
+                  {order.paymentMethod === "qris" ? "QRIS" : "Cash"}
+                </span>
+              </div>
+
+              <div className="flex justify-between">
+                <span className="text-gray-500">Pengiriman</span>
+                <span className="font-semibold">
+                  {order.deliveryMethod === "pickup" ? "Pickup" : "Delivery"}
+                </span>
+              </div>
+
+              {order.address && (
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Alamat</span>
+                  <span className="font-semibold text-right max-w-[200px]">{order.address}</span>
+                </div>
+              )}
+
+              {order.scheduledAt && (
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Waktu Pengambilan</span>
+                  <span className="font-semibold">{formatDateTime(order.scheduledAt)}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Product List */}
+        <div className="px-4 mb-5 mt-4">
+          <div className="bg-white rounded-xl p-5 border border-orange-100 shadow-sm">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-black">Produk</h2>
+              <span className="bg-orange-100 text-orange-600 px-3 py-1 rounded-xl text-xs font-bold">
+                {order.OrderItem?.length || 0} Item
+              </span>
+            </div>
+
+            {/* Items */}
+            {order.OrderItem?.map((item, index) => (
+              <div
+                key={item.id}
+                className={`flex justify-between items-center py-3 ${index < order.OrderItem.length - 1 ? 'border-b border-dashed' : ''
+                  }`}
               >
-                Bayar Sekarang
-              </a>
-            </p>
+                <div>
+                  <h3 className="text-left font-bold">{item.Product.name}</h3>
+                  <p className="text-sm text-left text-gray-500">
+                    x{item.qty} • {item.type === "matang" ? "Matang" : "Frozen/Mentah"} • Rp {item.price.toLocaleString()}
+                  </p>
+                </div>
+                <p className="font-black">Rp {(item.qty * item.price).toLocaleString()}</p>
+              </div>
+            ))}
+
+            {/* Note */}
+            {order.note && (
+              <div className="py-3 border-t border-dashed mt-2">
+                <h3 className="font-bold mb-1">Catatan:</h3>
+                <div
+                  dangerouslySetInnerHTML={{ __html: order.note }}
+                  className="text-sm text-gray-500"
+                />
+              </div>
+            )}
+
+            {/* Total */}
+            <div className="mt-5 pt-4 border-t flex justify-between items-center">
+              <div>
+                <p className="text-sm text-gray-500">Total Pembayaran</p>
+                <h2 className="text-3xl font-black">Rp {order.total.toLocaleString()}</h2>
+              </div>
+            </div>
+
+            {/* QRIS Payment */}
+            {statusMap[order.status] === "Menunggu Pembayaran" && order.paymentMethod === "qris" && (
+              <div className="mt-4 pt-4 border-t">
+                <p className="text-sm text-gray-500 mb-2">
+                  Lakukan pembayaran sebelum: {formatDateTime(order.paymentExpiredAt)}
+                </p>
+                <a
+                  href={order.paymentUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-xl font-bold text-center shadow-lg shadow-blue-200 active:scale-[0.98] transition"
+                >
+                  Bayar Sekarang
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Cancel Button */}
+        {statusMap[order.status] !== "Dibatalkan" && statusMap[order.status] !== "Selesai" && (
+          <div className="px-4 mt-5 pb-6">
             <button
               onClick={handleCancelButton}
-              className="mt-4 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-colors"
+              className="w-full bg-red-500 hover:bg-red-600 text-white py-5 rounded-2xl font-black text-lg shadow-lg shadow-red-200 active:scale-[0.98] transition"
             >
-              Batalkan Pembayaran
+              Batalkan Pesanan
             </button>
-          </>
+          </div>
         )}
+      </div>
     </div>
   );
 }

@@ -1,13 +1,29 @@
+import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { api } from "../../services/api";
 
-export default function PaymentSuccess() {
+export default function OrderSuccess() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
 
+  const [order, setOrder] = useState(null);
   const orderCode = params.get("orderCode");
   const status = params.get("transaction_status");
 
   const isPaid = status === "settlement";
+
+  const fetchOrder = async () => {
+    try {
+      const res = await api.get(`/orders/customer/code/${orderCode}`);
+      setOrder(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrder();
+  }, []);
 
   return (
     <div className="bg-gray-50 h-screen flex flex-col items-center justify-center text-center p-6">
@@ -18,8 +34,13 @@ export default function PaymentSuccess() {
         className="mb-6"
       />
       <h1 className="google-sans-flex-bold text-2xl font-bold text-green-600 mb-2">
-        Pembayaran Berhasil
+        Pesanan Berhasil
       </h1>
+      {order?.paymentMethod === "cash" && (
+        <h2 className="google-sans-flex-bold text-2xl font-bold text-green-600 mb-2">
+          Silahkan Bayar Ke Penjual
+        </h2>
+      )}
 
       <button
         onClick={() => navigate(`/order/${orderCode}`)}

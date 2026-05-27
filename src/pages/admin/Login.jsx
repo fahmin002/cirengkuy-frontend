@@ -1,11 +1,12 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi";
 import { api } from "../../services/api";
+import { toast } from "sonner";
 
 export default function Login() {
   const navigate = useNavigate();
-
+  const location = useLocation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -13,10 +14,15 @@ export default function Login() {
 
   const handleLogin = async () => {
     try {
-      if (!username || !password) {
-        return alert("Username dan password wajib diisi");
+      if (!username) {
+        toast.error("Field username dan password wajib diisi");
+        return
       }
 
+      if (!password) {
+        toast.error("Field username dan password wajib diisi");
+        return
+      }
       setLoading(true);
 
       const res = await api.post("/auth/login", {
@@ -24,19 +30,29 @@ export default function Login() {
         password,
       });
 
-      localStorage.setItem(
-        "token",
-        res.data.token
-      );
-
-      navigate("/admin/orders");
+      const loginSuccess = res.success;
+      if (loginSuccess === true) {
+        localStorage.setItem(
+          "token",
+          res.data.token
+        );
+        navigate("/admin");
+      }
     } catch (err) {
-      console.error("Login error:", err);
-      alert("Login gagal");
+      setPassword("");
+      setUsername("")
+      return toast.error("Login gagal, username atau password salah");
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const message = location.state?.message;
+    if (message) {
+      toast.message(message);
+    }
+  }, [])
 
   return (
     <div
@@ -98,6 +114,7 @@ export default function Login() {
             </label>
 
             <input
+              required
               placeholder="Masukkan username"
               value={username}
               onChange={(e) =>
@@ -122,6 +139,7 @@ export default function Login() {
             </label>
 
             <input
+              required
               type="password"
               placeholder="Masukkan password"
               value={password}
@@ -142,6 +160,7 @@ export default function Login() {
 
           {/* Login Button */}
           <button
+            type="button"
             onClick={handleLogin}
             disabled={loading}
             className="
@@ -164,8 +183,9 @@ export default function Login() {
           </button>
         </div>
       </div>
-            {/* Back Button */}
+      {/* Back Button */}
       <button
+        type="button"
         onClick={() => navigate("/")}
         className="
           mb-10

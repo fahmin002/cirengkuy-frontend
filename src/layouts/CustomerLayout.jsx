@@ -15,12 +15,6 @@ export default function CustomerLayout() {
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
-    // Check guest udh pernah buka app, kalo belum arahkan ke landing page
-    const isFirstVisit = !localStorage.getItem("visited");
-    if (isFirstVisit) {
-      localStorage.setItem("visited", "true");
-      navigate("/landing");
-    }
     const token = localStorage.getItem("token");
     // cek apakah admin
     if (token) {
@@ -41,12 +35,12 @@ export default function CustomerLayout() {
             {location.pathname === '/' ? (
               <div className='flex flex-col items-center text-orange-500 w-12 h-12'>
                 <HiHome size={40} />
-                <span className='font-semibold'>Home</span>
+                <span className='font-semibold'>Katalog</span>
               </div>
             ) : (
               <div className='flex flex-col items-center w-12 h-12'>
                 <HiOutlineHome size={40} />
-                <span className='font-semibold'>Home</span>
+                <span className='font-semibold'>Katalog</span>
               </div>
             )}
           </Link>

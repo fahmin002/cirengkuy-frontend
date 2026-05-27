@@ -20,7 +20,6 @@ const request = async (endpoint, options = {}) => {
     // 🔥 handle unauthorized (auto logout)
     if (response.status === 401) {
       localStorage.removeItem("token");
-      window.location.href = "/admin/login";
       return;
     }
 
@@ -32,7 +31,7 @@ const request = async (endpoint, options = {}) => {
 
     return data;
   } catch (err) {
-    console.error("API error:", err.message);
+    // console.error("API error:", err.message);
     throw err;
   }
 };

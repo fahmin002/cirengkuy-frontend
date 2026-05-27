@@ -16,10 +16,14 @@ export function CartProvider({ children }) {
             : item
         );
       }
-      localStorage.setItem('cart', JSON.stringify([...prev, { ...product, qty: 1 }]));
-      return [...prev, { ...product, qty: 1 }];
+      localStorage.setItem('cart', JSON.stringify([...prev, { ...product, qty: 1, type: "matang" }]));
+      return [...prev, { ...product, qty: 1, type: "matang" }];
     });
   };
+
+  const changeProductType = (product) => {
+
+  }
 
   const removeFromCart = (id) => {
     setCart(prev => prev.filter(item => item.id !== id));
@@ -44,6 +48,18 @@ export function CartProvider({ children }) {
     )));
   };
 
+  const updateType = (id, type) => {
+
+    setCart(prev =>
+      prev.map(item =>
+        item.id === id ? { ...item, type } : item
+      )
+    );
+    localStorage.setItem('cart', JSON.stringify(cart.map(item =>
+      item.id === id ? { ...item, type } : item
+    )));
+  };
+
   const total = cart.reduce((acc, item) => acc + item.price * item.qty, 0);
   useEffect(() => {
     const savedCart = localStorage.getItem('cart');
@@ -59,6 +75,7 @@ export function CartProvider({ children }) {
       removeFromCart,
       updateQty,
       emptyCart,
+      updateType,
       total
     }}>
       {children}

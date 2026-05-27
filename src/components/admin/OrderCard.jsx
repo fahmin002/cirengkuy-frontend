@@ -1,11 +1,12 @@
 import { FaRegEye } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { formatDateTime } from "../../utils/date";
 
 // src/components/orders/OrderCard.jsx
 const statusMap = {
   pending: 'Pending',
   paid: 'Dibayar',
-  cooking: 'Dimasak',
+  cooking: 'Disiapkan',
   ready: 'Siap',
   completed: 'Selesai',
   cancelled: 'Batal',
@@ -56,6 +57,11 @@ export default function OrderCard({ order, onAction, loading }) {
           {order.customerPhone && (
             <p className="text-xs text-gray-500">{order.customerPhone}</p>
           )}
+          <p className="text-xs text-gray-500">
+            {order.scheduledAt
+              ? `Diambil ${formatDateTime(order.pickupTime)}`
+              : `Diambil Sekarang`}
+          </p>
         </div>
 
 
@@ -77,6 +83,8 @@ export default function OrderCard({ order, onAction, loading }) {
         {order.OrderItem?.length > 2 && (
           <p className="text-xs text-gray-400">+ lainnya</p>
         )}
+        <p className="font-semibold">Catatan:</p>
+        <div dangerouslySetInnerHTML={{ __html: order.note }} className="text-sm text-left text-gray-500" />
       </div>
 
       {/* Footer */}
