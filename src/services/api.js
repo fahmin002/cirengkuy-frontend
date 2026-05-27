@@ -9,6 +9,7 @@ const request = async (endpoint, options = {}) => {
       ...(isFormData ? {} : { "Content-Type": "application/json" }),
       ...(options.headers || {}),
       ...(token && { Authorization: `Bearer ${token}` }),
+      ...({ "ngrok-skip-browser-warning": "true" }),
     };
 
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
