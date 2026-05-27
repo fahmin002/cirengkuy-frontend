@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "/api/*"
+  to = "https://difficult-anatomy-donut.ngrok-free.dev/api/:splat"
+  status = 200
+  force = true
