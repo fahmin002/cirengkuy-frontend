@@ -1,4 +1,6 @@
-const API_BASE_URL = "/api";
+const API_BASE_URL =
+  import.meta.env.VITE_BACKEND_URL + "/api" || "http://192.168.1.5:5000/api";
+
 const request = async (endpoint, options = {}) => {
   try {
     const isFormData = options.body instanceof FormData;
@@ -8,7 +10,6 @@ const request = async (endpoint, options = {}) => {
       ...(isFormData ? {} : { "Content-Type": "application/json" }),
       ...(options.headers || {}),
       ...(token && { Authorization: `Bearer ${token}` }),
-      ...({ "ngrok-skip-browser-warning": "true" }),
     };
 
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
