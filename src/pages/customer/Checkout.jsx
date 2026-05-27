@@ -79,6 +79,7 @@ export default function Checkout() {
 
 
   const handleUpdateQty = (id, qty) => {
+    const currentQty = getQty(id);
     // jika qty melebihi 0, kembalikan jumlah ke maksimal stok
     const product = products.find((p) => p.id === id);
     if (product && qty > product.stock) {
@@ -88,7 +89,7 @@ export default function Checkout() {
       toast('Yakin menghapus item?', {
         cancel: {
           label: 'Batal',
-          onClick: () => updateQty(id, 1),
+          onClick: () => updateQty(id, currentQty),
 
         },
         action: {
@@ -244,13 +245,22 @@ export default function Checkout() {
                       </button>
                     </div>
                   </div>
-                  <button
-                    // onClick={() => handleUpdateQty(item.id, getQty(item.id) + (getQty(item.id) % 5 === 0 ? 5 : 4))}
-                    onClick={() => handleUpdateQty(item.id, getQty(item.id) + 5)}
-                    className="text-xs active:bg-orange-300 px-3 py-1 rounded-full bg-orange-100 text-orange-600"
-                  >
-                    +5
-                  </button>
+                  <div className="flex flex-row gap-1">
+                    <button
+                      // onClick={() => handleUpdateQty(item.id, getQty(item.id) + (getQty(item.id) % 5 === 0 ? 5 : 4))}
+                      onClick={() => handleUpdateQty(item.id, null)}
+                      className="text-xs active:bg-orange-300 px-3 py-1 rounded-full bg-orange-100 text-orange-600"
+                    >
+                      <FaRegTrashAlt className="w-full bg-orange-100" />
+                    </button>
+                    <button
+                      // onClick={() => handleUpdateQty(item.id, getQty(item.id) + (getQty(item.id) % 5 === 0 ? 5 : 4))}
+                      onClick={() => handleUpdateQty(item.id, getQty(item.id) + 5)}
+                      className="text-xs active:bg-orange-300 px-3 py-1 rounded-full bg-orange-100 text-orange-600"
+                    >
+                      +5
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
