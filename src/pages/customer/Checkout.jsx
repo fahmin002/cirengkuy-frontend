@@ -244,6 +244,13 @@ export default function Checkout() {
                       </button>
                     </div>
                   </div>
+                  <button
+                    // onClick={() => handleUpdateQty(item.id, getQty(item.id) + (getQty(item.id) % 5 === 0 ? 5 : 4))}
+                    onClick={() => handleUpdateQty(item.id, getQty(item.id) + 5)}
+                    className="text-xs active:bg-orange-300 px-3 py-1 rounded-full bg-orange-100 text-orange-600"
+                  >
+                    +5
+                  </button>
                 </div>
               </div>
             </div>
