@@ -1,6 +1,5 @@
 const API_BASE_URL =
   import.meta.env.VITE_BACKEND_URL + "/api" || "http://192.168.1.5:5000/api";
-console.log(API_BASE_URL);
 const request = async (endpoint, options = {}) => {
   try {
     const isFormData = options.body instanceof FormData;
