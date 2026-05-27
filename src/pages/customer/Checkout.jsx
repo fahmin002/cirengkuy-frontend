@@ -218,10 +218,11 @@ export default function Checkout() {
                     </div>
                     <div className="flex ring-1 ring-orange-200 bg-orange-100 gap-1 rounded-md mt-4 ">
                       <button
-                        onClick={() => handleUpdateQty(item.id, getQty(item.id) - (getQty(item.id) % 5 === 0 ? 5 : 4))}
+                        // onClick={() => handleUpdateQty(item.id, getQty(item.id) - (getQty(item.id) % 5 === 0 ? 5 : 4))}
+                        onClick={() => handleUpdateQty(item.id, getQty(item.id) - 1)}
                         className="active:bg-orange-300 text-orange-500 p-2"
                       >
-                        {getQty(item.id) <= 5 ? <FaRegTrashAlt className="w-full bg-orange-100" /> : <span className="">-</span>}
+                        {getQty(item.id) <= 1 ? <FaRegTrashAlt className="w-full bg-orange-100" /> : <span className="">-</span>}
                       </button>
                       {/* <div
                     className="font-bold text-center border border-gray-300 rounded-md w-10"
@@ -235,7 +236,8 @@ export default function Checkout() {
                         className="font-bold text-center  w-10"
                       />
                       <button
-                        onClick={() => handleUpdateQty(item.id, getQty(item.id) + (getQty(item.id) % 5 === 0 ? 5 : 4))}
+                        // onClick={() => handleUpdateQty(item.id, getQty(item.id) + (getQty(item.id) % 5 === 0 ? 5 : 4))}
+                        onClick={() => handleUpdateQty(item.id, getQty(item.id) + 1)}
                         className="p-2 text-orange-500 active:bg-orange-300"
                       >
                         +
