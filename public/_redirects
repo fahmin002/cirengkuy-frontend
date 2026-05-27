@@ -1,2 +1,0 @@
-/api/* https://difficult-anatomy-donut.ngrok-free.dev/api/:splat 200
-/socket.io/* https://difficult-anatomy-donut.ngrok-free.dev/socket.io/:splat 200
