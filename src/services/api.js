@@ -1,6 +1,7 @@
-const backendUrl = "https://rabbit-suited-router-promoted.trycloudflare.com"
+const backendURi = "https://rabbit-suited-router-promoted.trycloudflare.com"
+
 const API_BASE_URL =
-  backendUrl + "/api" || "http://192.168.1.5:5000/api";
+  backendUri + "/api" || "http://192.168.1.5:5000/api";
 
 const request = async (endpoint, options = {}) => {
   try {
