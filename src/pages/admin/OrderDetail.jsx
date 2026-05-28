@@ -15,24 +15,6 @@ export default function AdminOrderDetail() {
     const [action, setAction] = useState({});
     const navigate = useNavigate();
 
-    const statusMap = {
-        pending: "Menunggu Pembayaran",
-        paid: order?.paymentMethod === 'qris' ? "Sudah Dibayar" : "Bayar Di Tempat",
-        cooking: "Sedang Disiapkan",
-        ready: "Siap Diambil/Diantar",
-        completed: "Selesai",
-        cancelled: "Dibatalkan",
-    };
-
-    const statusBadgeColor = {
-        pending: "bg-yellow-100 text-yellow-700",
-        paid: "bg-blue-100 text-blue-700",
-        cooking: "bg-orange-100 text-orange-700",
-        ready: "bg-green-100 text-green-700",
-        completed: "bg-gray-100 text-gray-700",
-        cancelled: "bg-red-100 text-red-700",
-    };
-
     const handleAction = async (code, nextStatus) => {
         try {
             setLoadingCode(code);
@@ -98,6 +80,24 @@ export default function AdminOrderDetail() {
         }
     }, [code]);
 
+    const statusMap = {
+        pending: "Menunggu Pembayaran",
+        paid: order?.paymentMethod === 'qris' ? "Sudah Dibayar" : "Bayar Di Tempat",
+        cooking: "Sedang Disiapkan",
+        ready: "Siap Diambil/Diantar",
+        completed: "Selesai",
+        cancelled: "Dibatalkan",
+    };
+
+    const statusBadgeColor = {
+        pending: "bg-yellow-100 text-yellow-700",
+        paid: "bg-blue-100 text-blue-700",
+        cooking: "bg-orange-100 text-orange-700",
+        ready: "bg-green-100 text-green-700",
+        completed: "bg-gray-100 text-gray-700",
+        cancelled: "bg-red-100 text-red-700",
+    };
+    
     // Generate timeline steps based on order status
     const getTimelineSteps = () => {
         const steps = [
@@ -105,7 +105,7 @@ export default function AdminOrderDetail() {
         ];
 
         if (order.paidAt) {
-            steps.push({ label: order.paymentMethod === 'qris' ? "Pembayaran Berhasil" : "Perlu Bayar Di Tempat", time: formatDateTime(order.paidAt), completed: true });
+            steps.push({ label: order?.paymentMethod === 'qris' ? "Pembayaran Berhasil" : "Perlu Bayar Di Tempat", time: formatDateTime(order.paidAt), completed: true });
         }
 
         if (order.status === "cooking" || order.status === "ready" || order.status === "completed") {
@@ -113,7 +113,7 @@ export default function AdminOrderDetail() {
         }
 
         if (order.status === "ready" || order.status === "completed") {
-            steps.push({ label: "Pesanan Siap", time: order.paymentMethod === 'qris' ? "Siap diambil/diantar" : "Pesanan Sudah Siap, Pembayaran Di Tempat", completed: true, active: order.status === "ready" });
+            steps.push({ label: "Pesanan Siap", time: order?.paymentMethod === 'qris' ? "Siap diambil/diantar" : "Pesanan Sudah Siap, Pembayaran Di Tempat", completed: true, active: order.status === "ready" });
         }
 
         if (order.status === "completed") {
@@ -173,10 +173,10 @@ export default function AdminOrderDetail() {
                             </div>
 
                             <div className={`px-4 py-2 rounded-2xl text-sm font-bold ${statusBadgeColor[order.status]}`}>
-                                {order.status === "cooking" ? "Cooking" :
-                                    order.status === "ready" ? "Ready" :
-                                        order.status === "completed" ? "Done" :
-                                            order.status === "cancelled" ? "Cancelled" :
+                                {order.status === "cooking" ? "Menyiapkan" :
+                                    order.status === "ready" ? "Siap" :
+                                        order.status === "completed" ? "Selesai" :
+                                            order.status === "cancelled" ? "Dibatalkan" :
                                                 order.status === "paid" ? (order.paymentMethod === 'qris' ? 'Paid' : 'COD') : "Pending"}
                             </div>
                         </div>
@@ -187,12 +187,12 @@ export default function AdminOrderDetail() {
                                 <div key={index} className={`flex gap-3 ${step.active === false && index !== 0 ? 'opacity-40' : ''}`}>
                                     <div
                                         className={`w-4 h-4 rounded-full mt-1 flex-shrink-0 ${step.cancelled
-                                                ? 'bg-red-500'
-                                                : step.completed
-                                                    ? step.active
-                                                        ? 'bg-orange-500'
-                                                        : 'bg-green-500'
-                                                    : 'bg-gray-300'
+                                            ? 'bg-red-500'
+                                            : step.completed
+                                                ? step.active
+                                                    ? 'bg-orange-500'
+                                                    : 'bg-green-500'
+                                                : 'bg-gray-300'
                                             }`}
                                     ></div>
 
@@ -225,9 +225,9 @@ export default function AdminOrderDetail() {
                             )}
 
                             <div className="flex justify-between">
-                                <span className="text-gray-500">Metode Pembayaran</span>
-                                <span className="font-semibold">
-                                    {order.paymentMethod === "qris" ? "QRIS" : "Cash"}
+                                <span className="text-gray-500 text-left">Metode Pembayaran</span>
+                                <span className="font-semibold text-right">
+                                    {order.paymentMethod === "qris" ? "QRIS" : "Bayar Di Tempat"}
                                 </span>
                             </div>
 
