@@ -9,7 +9,7 @@ createRoot(document.getElementById('root')).render(
     <App />
 
     <Toaster
-      position="top-right"
+      position="top-center"
       closeButton
       expand={false}
       richColors={false}

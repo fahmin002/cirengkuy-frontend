@@ -109,7 +109,7 @@ export default function Reports() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 rounded-xl pb-24">
+    <div className="min-h-screen lg:w-lg bg-gray-50 rounded-xl pb-24">
       {/* Header */}
       <div className="mb-6 pt-4 px-4">
         <h1

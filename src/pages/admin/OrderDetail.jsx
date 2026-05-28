@@ -82,9 +82,9 @@ export default function AdminOrderDetail() {
 
     const statusMap = {
         pending: "Menunggu Pembayaran",
-        paid: order?.paymentMethod === 'qris' ? "Sudah Dibayar" : "Bayar Di Tempat",
+        paid: "Menunggu Konfirmasi Admin",
         cooking: "Sedang Disiapkan",
-        ready: "Siap Diambil/Diantar",
+        ready: `Siap ${order?.deliveryMethod === "pickup" ? 'Diambil' : 'Diantar'}`,
         completed: "Selesai",
         cancelled: "Dibatalkan",
     };
@@ -105,15 +105,15 @@ export default function AdminOrderDetail() {
         ];
 
         if (order.paidAt) {
-            steps.push({ label: order?.paymentMethod === 'qris' ? "Pembayaran Berhasil" : "Perlu Bayar Di Tempat", time: formatDateTime(order.paidAt), completed: true });
+            steps.push({ label: "Menunggu Konfirmasi Admin", time: formatDateTime(order.paidAt), completed: true });
         }
 
         if (order.status === "cooking" || order.status === "ready" || order.status === "completed") {
-            steps.push({ label: "Pesanan Diproses", time: "Sedang dimasak 🔥", completed: true, active: order.status === "cooking" });
+            steps.push({ label: "Pesanan Diproses", time: "Sedang disiapkan 🔥", completed: true, active: order.status === "cooking" });
         }
 
         if (order.status === "ready" || order.status === "completed") {
-            steps.push({ label: "Pesanan Siap", time: order?.paymentMethod === 'qris' ? "Siap diambil/diantar" : "Pesanan Sudah Siap, Pembayaran Di Tempat", completed: true, active: order.status === "ready" });
+            steps.push({ label: "Pesanan Siap", time: `Siap ${order?.deliveryMethod === "pickup" ? 'Diambil' : 'Diantar'}${order?.paymentMethod === 'qris' ? "" : ", Pembayaran Di Tempat"}`, completed: true, active: order.status === "ready" });
         }
 
         if (order.status === "completed") {
@@ -140,7 +140,7 @@ export default function AdminOrderDetail() {
     );
 
     return (
-        <div className="pb-24 overflow-hidden rounded-xl shadow-2xl bg-gray-100 flex justify-center font-sans">
+        <div className="pb-24 lg:w-lg overflow-hidden rounded-xl shadow-2xl bg-gray-100 flex justify-center font-sans">
             <div className="w-full border border-white/40 mx-4">
                 {/* Header */}
                 <div className="px-6 pt-8 pb-5">

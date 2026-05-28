@@ -32,13 +32,13 @@ export default function AdminLayout() {
     <>
       {location.pathname !== "/admin/login" ? (
         <>
-          <div className="">
+          <div className="lg:w-lg lg:flex lg:justify-center">
             {/* Navbar */}
             {/* Bottom Navigation like mobile app */}
-            <nav className="fixed rounded-t-4xl ring-1 ring-orange-200 shadow-orange-200 shadow-2xl bottom-0 left-0 right-0 bg-white p-4 flex justify-center z-10">
-              <div className="flex justify-around w-full ease-in-out duration-300 max-w-md">
+            <nav className="fixed rounded-t-4xl lg:w-fit ring-1 ring-orange-200 shadow-orange-200 shadow-2xl bottom-0 left-0 right-0 bg-white p-4 flex justify-center z-10">
+              <div className="flex lg:flex-col lg:gap-8 lg:h-screen justify-around lg:justify-start w-full ease-in-out duration-300 max-w-md">
                 {/* Home */}
-                <Link to="/admin">
+                <Link to="/admin" className="lg:mt-10">
                   {location.pathname === "/admin" ? (
                     <div className="flex flex-col items-center text-orange-500 w-12 h-12">
                       <RiDashboardHorizontalFill size={20} />

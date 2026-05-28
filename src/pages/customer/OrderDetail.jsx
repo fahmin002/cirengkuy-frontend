@@ -104,9 +104,9 @@ export default function OrderDetail() {
 
   const statusMap = {
     pending: "Menunggu Pembayaran",
-    paid: order?.paymentMethod === 'qris' ? "Sudah Dibayar" : "Bayar Di Tempat",
+    paid: "Menunggu Konfirmasi Admin",
     cooking: "Sedang Disiapkan",
-    ready: "Siap Diambil/Diantar",
+    ready: `Siap ${order?.deliveryMethod === "pickup" ? 'Diambil' : 'Diantar'}`,
     completed: "Selesai",
     cancelled: "Dibatalkan",
   };
@@ -127,15 +127,15 @@ export default function OrderDetail() {
     ];
 
     if (order.paidAt) {
-      steps.push({ label: order?.paymentMethod === 'qris' ? "Pembayaran Berhasil" : "Perlu Bayar Di Tempat", time: formatDateTime(order.paidAt), completed: true });
+      steps.push({ label: "Menunggu Konfirmasi Admin", time: formatDateTime(order.paidAt), completed: true });
     }
 
     if (order.status === "cooking" || order?.status === "ready" || order.status === "completed") {
-      steps.push({ label: "Pesanan Diproses", time: "Sedang dimasak 🔥", completed: true, active: order.status === "cooking" });
+      steps.push({ label: "Pesanan Diproses", time: "Sedang disiapkan 🔥", completed: true, active: order.status === "cooking" });
     }
 
     if (order.status === "ready" || order.status === "completed") {
-      steps.push({ label: "Pesanan Siap", time: order?.paymentMethod === 'qris' ? "Siap diambil/diantar" : "Pesanan Sudah Siap, silahkan bayar ke admin", completed: true, active: order.status === "ready" });
+      steps.push({ label: "Pesanan Siap", time: `Siap ${order?.deliveryMethod === "pickup" ? 'Diambil' : 'Diantar'}${order?.paymentMethod === 'qris' ? '' : ", silahkan bayar ke admin"}`, completed: true, active: order.status === "ready" });
     }
 
     if (order.status === "completed") {
@@ -161,7 +161,7 @@ export default function OrderDetail() {
   );
 
   return (
-    <div className="pb-24 overflow-hidden rounded-xl shadow-2xl bg-gray-100 flex justify-center font-sans">
+    <div className="pb-24 lg:w-md overflow-hidden rounded-xl shadow-2xl bg-gray-100 flex justify-center font-sans">
       <div className="w-full border border-white/40 mx-4">
         {/* Header */}
         <div className="px-6 pt-8 pb-5">
@@ -173,7 +173,7 @@ export default function OrderDetail() {
               <BiArrowBack size={20} />
             </button>
 
-            <div>
+            <div className="flex flex-col items-center">
               <p className="text-sm text-gray-500">Detail Pesanan</p>
               <div className="text-2xl font-black text-black">
                 {`CKUY-${formatOrderCode(order.code)}`}

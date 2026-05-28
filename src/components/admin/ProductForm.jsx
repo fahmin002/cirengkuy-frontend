@@ -117,6 +117,8 @@ export default function ProductForm({ product = null, onClose, onSuccess }) {
       {/* Bottom Sheet */}
       <div
         className="
+          lg:w-lg
+          lg:mx-auto
           fixed bottom-0 left-0 right-0
           bg-white
           rounded-t-[32px]

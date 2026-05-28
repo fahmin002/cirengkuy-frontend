@@ -1,10 +1,10 @@
 import { createContext, useContext, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
-
   const addToCart = (product) => {
     setCart(prev => {
       const existing = prev.find(item => item.id === product.id);
@@ -17,6 +17,22 @@ export function CartProvider({ children }) {
         );
       }
       localStorage.setItem('cart', JSON.stringify([...prev, { ...product, qty: 1, type: "matang" }]));
+      toast('Produk Ditambahkan, Lanjut Checkout?', {
+        cancel: {
+          label: 'Belum',
+          onClick: () => {
+            return
+          },
+
+        },
+        action: {
+          label: 'Checkout',
+          onClick: () => window.location.href = "/checkout",
+          actionButtonStyle: {
+            backgroundColor: "orange"
+          }
+        }
+      });
       return [...prev, { ...product, qty: 1, type: "matang" }];
     });
   };

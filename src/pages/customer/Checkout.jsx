@@ -179,7 +179,7 @@ export default function Checkout() {
   };
 
   return (
-    <div className="p-4 bg-gray-50 rounded-xl pb-24">
+    <div className="p-4 lg:p-6 lg:w-md bg-gray-50 rounded-xl pb-24">
       <div className="">
         <h1 className="text-xl font-bold google-sans-flex-bold text-left">
           Checkout

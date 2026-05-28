@@ -22,15 +22,15 @@ export default function CustomerLayout() {
     }
   })
   return (
-    <div>
+    <div className='lg:w-lg lg:flex lg:justify-center'>
       {/* Navbar */}
       {/* Bottom Navigation like mobile app */}
       <nav
-        className='fixed rounded-t-4xl shadow-xl ring-1 ring-orange-200 shadow-orange-200 bottom-0 left-0 right-0 bg-white p-4 flex justify-center z-10'
+        className='fixed lg:w-fit rounded-t-4xl shadow-xl ring-1 ring-orange-200 shadow-orange-200 bottom-0 left-0 right-0 bg-white p-4 flex justify-center z-10'
       >
-        <div className='flex justify-around w-full ease-in-out duration-300 max-w-md'>
+        <div className='flex lg:justify-start lg:flex-col lg:gap-8 lg:h-screen justify-around w-full ease-in-out duration-300 max-w-md'>
           {/* Home */}
-          <Link to="/"
+          <Link to="/" className='lg:mt-10'
           >
             {location.pathname === '/' ? (
               <div className='flex flex-col items-center text-orange-500 w-12 h-12'>
@@ -51,7 +51,7 @@ export default function CustomerLayout() {
               <div className='flex flex-col items-center text-orange-500 w-12 h-12'>
                 {/* item count */}
                 {totalItems > 0 && (
-                  <div className='absolute -top-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center'>
+                  <div className='absolute lg:top-30 -top-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center'>
                     {totalItems}
                   </div>
                 )}
@@ -62,7 +62,7 @@ export default function CustomerLayout() {
               <div className='flex flex-col items-center w-12 h-12'>
                 {/* item count */}
                 {totalItems > 0 && (
-                  <div className='absolute -top-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center'>
+                  <div className='absolute lg:top-30 -top-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center'>
                     {totalItems}
                   </div>
                 )}
