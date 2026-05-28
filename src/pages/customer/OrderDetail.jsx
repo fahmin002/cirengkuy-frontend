@@ -255,7 +255,7 @@ export default function OrderDetail() {
               <div className="flex justify-between">
                 <span className="text-gray-500">Pengiriman</span>
                 <span className="font-semibold">
-                  {order.deliveryMethod === "pickup" ? "Ambil Sendiri" : "Diantar"}
+                  {order.deliveryMethod === "pickup" ? "Ambil Di Warung" : "Diantar"}
                 </span>
               </div>
 

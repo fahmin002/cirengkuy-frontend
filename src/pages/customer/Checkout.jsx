@@ -310,7 +310,7 @@ export default function Checkout() {
                 }
     `}
             >
-              Ambil Sendiri
+              Ambil Di Warung
             </button>
 
             {total >= 20000 && (
