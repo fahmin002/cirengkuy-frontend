@@ -7,6 +7,7 @@ import { MdOutlineShoppingCartCheckout, MdShoppingCartCheckout } from 'react-ico
 import { PiClipboardDuotone, PiClipboardFill, PiClipboardText } from 'react-icons/pi';
 import { useEffect, useState } from 'react';
 import { BsDatabaseFillLock, BsDatabaseLock } from 'react-icons/bs';
+import { IoLogInOutline } from 'react-icons/io5';
 
 export default function CustomerLayout() {
   const location = useLocation();
@@ -87,22 +88,13 @@ export default function CustomerLayout() {
             )}
           </Link>
           {/* Admin */}
-          {isAdmin && (
-            <Link to="/admin"
-            >
-              {location.pathname === '/admin' ? (
-                <div className='flex flex-col items-center text-orange-500 w-12 h-12'>
-                  <BsDatabaseFillLock size={40} />
-                  <span className='font-semibold'>Admin</span>
-                </div>
-              ) : (
-                <div className='flex flex-col items-center w-12 h-12'>
-                  <BsDatabaseLock size={40} />
-                  <span className='font-semibold'>Admin</span>
-                </div>
-              )}
-            </Link>
-          )}
+          <Link to="/admin"
+          >
+            <div className='flex flex-col items-center w-12 h-12'>
+              <BsDatabaseLock size={40} />
+              <span className='font-semibold'>Admin</span>
+            </div>
+          </Link>
         </div>
       </nav>
 

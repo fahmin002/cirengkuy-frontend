@@ -112,7 +112,7 @@ function getNextAction(status) {
     case 'pending':
       return { label: 'Tandai Dibayar', next: 'paid', color: 'bg-blue-500' };
     case 'paid':
-      return { label: 'Mulai Masak', next: 'cooking', color: 'bg-orange-500' };
+      return { label: 'Konfirmasi dan Siapkan', next: 'cooking', color: 'bg-orange-500' };
     case 'cooking':
       return { label: 'Siap', next: 'ready', color: 'bg-green-500' };
     case 'ready':
