@@ -1,3 +1,3 @@
 import { io } from 'socket.io-client';
 
-export const socket = io("https://rabbit-suited-router-promoted.trycloudflare.com")
+export const socket = io(import.meta.env.VITE_BACKEND_URL)

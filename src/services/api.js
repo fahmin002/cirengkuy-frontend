@@ -1,7 +1,5 @@
-const backendUri = "https://rabbit-suited-router-promoted.trycloudflare.com"
-
 const API_BASE_URL =
-  backendUri + "/api" || "http://192.168.1.5:5000/api";
+  import.meta.env.VITE_BACKEND_URL + "/api" || "http://192.168.1.5:5000/api";
 
 const request = async (endpoint, options = {}) => {
   try {
