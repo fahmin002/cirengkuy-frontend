@@ -1,4 +1,4 @@
-const backendURi = "https://rabbit-suited-router-promoted.trycloudflare.com"
+const backendUri = "https://rabbit-suited-router-promoted.trycloudflare.com"
 
 const API_BASE_URL =
   backendUri + "/api" || "http://192.168.1.5:5000/api";
