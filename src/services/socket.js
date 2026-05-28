@@ -1,5 +1,5 @@
 import { io } from 'socket.io-client';
 
 export const socket = io(
-    "https://paso-remarkable-updating-queue.trycloudflare.com"
+    "https://rabbit-suited-router-promoted.trycloudflare.com"
 );

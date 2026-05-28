@@ -1,4 +1,4 @@
-const backendUrl = "https://paso-remarkable-updating-queue.trycloudflare.com"
+const backendUrl = "https://rabbit-suited-router-promoted.trycloudflare.com"
 const API_BASE_URL =
   backendUrl + "/api" || "http://192.168.1.5:5000/api";
 
