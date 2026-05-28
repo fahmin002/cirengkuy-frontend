@@ -17,7 +17,7 @@ export default function AdminOrderDetail() {
 
     const statusMap = {
         pending: "Menunggu Pembayaran",
-        paid: "Sudah Dibayar",
+        paid: order?.paymentMethod === 'qris' ? "Sudah Dibayar" : "Bayar Di Tempat",
         cooking: "Sedang Disiapkan",
         ready: "Siap Diambil/Diantar",
         completed: "Selesai",
@@ -105,7 +105,7 @@ export default function AdminOrderDetail() {
         ];
 
         if (order.paidAt) {
-            steps.push({ label: "Pembayaran Berhasil", time: formatDateTime(order.paidAt), completed: true });
+            steps.push({ label: order.paymentMethod === 'qris' ? "Pembayaran Berhasil" : "Perlu Bayar Di Tempat", time: formatDateTime(order.paidAt), completed: true });
         }
 
         if (order.status === "cooking" || order.status === "ready" || order.status === "completed") {
@@ -113,7 +113,7 @@ export default function AdminOrderDetail() {
         }
 
         if (order.status === "ready" || order.status === "completed") {
-            steps.push({ label: "Pesanan Siap", time: "Siap diambil/diantar", completed: true, active: order.status === "ready" });
+            steps.push({ label: "Pesanan Siap", time: order.paymentMethod === 'qris' ? "Siap diambil/diantar" : "Pesanan Sudah Siap, Pembayaran Di Tempat", completed: true, active: order.status === "ready" });
         }
 
         if (order.status === "completed") {
@@ -177,12 +177,12 @@ export default function AdminOrderDetail() {
                                     order.status === "ready" ? "Ready" :
                                         order.status === "completed" ? "Done" :
                                             order.status === "cancelled" ? "Cancelled" :
-                                                order.status === "paid" ? "Paid" : "Pending"}
+                                                order.status === "paid" ? (order.paymentMethod === 'qris' ? 'Paid' : 'COD') : "Pending"}
                             </div>
                         </div>
 
                         {/* Timeline */}
-                        <div className="mt-6 space-y-4">
+                        <div className="mt-6 text-left space-y-4">
                             {timelineSteps.map((step, index) => (
                                 <div key={index} className={`flex gap-3 ${step.active === false && index !== 0 ? 'opacity-40' : ''}`}>
                                     <div
@@ -234,7 +234,7 @@ export default function AdminOrderDetail() {
                             <div className="flex justify-between">
                                 <span className="text-gray-500">Pengiriman</span>
                                 <span className="font-semibold">
-                                    {order.deliveryMethod === "pickup" ? "Pickup" : "Delivery"}
+                                    {order.deliveryMethod === "pickup" ? "Ambil Sendiri" : "Diantar"}
                                 </span>
                             </div>
 
