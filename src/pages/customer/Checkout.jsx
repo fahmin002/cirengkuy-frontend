@@ -388,7 +388,7 @@ export default function Checkout() {
                 }
     `}
             >
-              Bayar Ditempat
+              Bayar Di Tempat
             </button>
           </div>
           {/* Schedule */}

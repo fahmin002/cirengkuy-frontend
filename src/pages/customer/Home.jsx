@@ -116,7 +116,7 @@ function Home() {
       )}
 
       {/* Header */}
-      <div className="flex justify-between items-center mb-2">
+      <div className="flex justify-between items-center">
         <div className="flex flex-col justify-center items-start">
           {/* Get Customer  first name */}
 
@@ -126,7 +126,6 @@ function Home() {
               ? JSON.parse(localStorage.getItem("customer")).name.split(" ")[0]
               : "Kawan"}
           </h1>
-          <p className="text-sm text-gray-500">Mau pesen apa?</p>
         </div>
         <div>
           {/* logo */}
@@ -145,18 +144,18 @@ function Home() {
         {products.map((p) => (
           <div
             key={p.id}
-            className="bg-white flex flex-col justify-around lg:items-center px-4 py-2 ring-1 ring-orange-200 shadow-orange-100 rounded-2xl shadow-md hover:scale-105 transition"
+            className="bg-white gap-2 flex flex-col justify-around lg:items-center px-4 py-2 ring-1 ring-orange-200 shadow-orange-100 rounded-2xl shadow-md hover:scale-105 transition"
           >
             {/* <div className=" bg-gray-200 rounded-full relative bottom-10"  /> */}
             <img
               src={`${import.meta.env.VITE_BACKEND_URL}${p.imageUrl}`}
-              className="rounded-xl w-fit"
+              className="w-full h-full object-cover hover:scale-105 active:scale-105 transition duration-300 rounded-lg"
               alt=""
               srcSet=""
             />
             {/* <img src="https://palpos.disway.id/upload/689037f489181bc693bdb9bc80168e19.jpg" className='rounded-4xl relative bottom-10 h-24 shadow-md' alt="" srcset="" /> */}
 
-            <h3 className="font-semibold google-sans-flex-bold text-left">
+            <h3 className="font-semibold google-sans-flex-bold text-left lg:text-center">
               {p.name}
             </h3>
             {/* Stok */}
