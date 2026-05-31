@@ -64,7 +64,12 @@ export default function AdminOrderDetail() {
         socket.emit("join-order-room", code);
 
         socket.on("order-status-updated", (data) => {
-            const toastMessage = `Pesanan ${statusMap[data.status]}`
+            let toastMessage;
+            if (data.status === "ready") {
+                toastMessage = `Pesanan Siap Diambil/Diantar`;
+            } else {
+                toastMessage = `Pesanan ${statusMap[data.status]}`
+            }
             toast.success(toastMessage);
             notifSound.currentTime = 0;
             notifSound.play();
@@ -97,7 +102,7 @@ export default function AdminOrderDetail() {
         completed: "bg-gray-100 text-gray-700",
         cancelled: "bg-red-100 text-red-700",
     };
-    
+
     // Generate timeline steps based on order status
     const getTimelineSteps = () => {
         const steps = [

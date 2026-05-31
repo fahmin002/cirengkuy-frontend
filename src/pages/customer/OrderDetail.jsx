@@ -81,7 +81,12 @@ export default function OrderDetail() {
     socket.emit("join-order-room", code);
 
     socket.on("order-status-updated", (data) => {
-      const toastMessage = `Pesanan ${statusMap[data.status]}`
+      let toastMessage;
+      if (data.status === "ready") {
+        toastMessage = `Pesanan Siap Diambil/Diantar`;
+      } else {
+        toastMessage = `Pesanan ${statusMap[data.status]}`
+      }
       if (data.msg) {
         toast.error(toastMessage + data?.msg)
       } else {
