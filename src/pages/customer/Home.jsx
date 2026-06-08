@@ -149,7 +149,7 @@ function Home() {
             {/* <div className=" bg-gray-200 rounded-full relative bottom-10"  /> */}
             <img
               src={`${import.meta.env.VITE_BACKEND_URL}${p.imageUrl}`}
-              className="w-full h-full object-cover hover:scale-105 active:scale-105 transition duration-300 rounded-lg"
+              className="w-full mt-1 h-full object-cover hover:scale-105 active:scale-105 transition duration-300 rounded-2xl shadow-md"
               alt=""
               srcSet=""
             />
