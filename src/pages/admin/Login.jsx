@@ -3,12 +3,14 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi";
 import { api } from "../../services/api";
 import { toast } from "sonner";
+import { HiEye, HiEyeOff } from "react-icons/hi";
 
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const [loading, setLoading] = useState(false);
 
@@ -133,14 +135,14 @@ export default function Login() {
           </div>
 
           {/* Password */}
-          <div className="mb-6 text-left">
+          <div className="relative mb-6 text-left">
             <label className="text-sm font-medium text-gray-700">
               Password
             </label>
 
             <input
               required
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Masukkan password"
               value={password}
               onChange={(e) =>
@@ -156,6 +158,17 @@ export default function Login() {
                 transition
               "
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-14 text-orange-500 -translate-y-1/2"
+            >
+              {showPassword ? (
+                <HiEyeOff size={20} />
+              ) : (
+                <HiEye size={20} />
+              )}
+            </button>
           </div>
 
           {/* Login Button */}

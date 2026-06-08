@@ -25,7 +25,7 @@ export default function ProductForm({ product = null, onClose, onSuccess }) {
       setForm({
         name: product.name || "",
         price: product.price || "",
-        stock: product.stock || "",
+        stock: product.stock || 0,
         image: product.image || null,
         imageUrl: product.imageUrl || null,
         isActive: product.isActive || false,
