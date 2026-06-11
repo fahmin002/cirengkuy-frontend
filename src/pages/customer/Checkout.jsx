@@ -112,7 +112,6 @@ export default function Checkout() {
 
 
   const handleCheckout = async () => {
-
     if (!form.name) {
       toast.error("Nama wajib diisi!");
       return;
@@ -138,7 +137,6 @@ export default function Checkout() {
 
       // simpan ke localStorage
       localStorage.setItem("customer", JSON.stringify(form));
-
       const payload = {
         customerName: form.name,
         customerPhone: form.phone,
@@ -402,11 +400,11 @@ export default function Checkout() {
               onChange={(e) => setForm({ ...form, schedule: e.target.value })}
             >
               <option value="sekarang">Sekarang</option>
-              <option value="nanti">Pilih Jadwal</option>
+              <option value="besok">Pilih Jadwal</option>
             </select>
           </div>
           {/* Kalau schedule adalah "besok", tampilkan input untuk tanggal dan waktu */}
-          {form.schedule === "nanti" && (
+          {form.schedule === "besok" && (
             <div className="mt-4">
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Tanggal dan Waktu Pengambilan
@@ -415,8 +413,9 @@ export default function Checkout() {
                 type="datetime-local"
                 className="shadow-md ring-1 ring-orange-200 shadow-orange-100 ease-in-out transition-all outline-none focus:ring-2 focus:ring-orange-500 focus:border-white p-2 border-gray-300 rounded-lg"
                 value={form.scheduleDateTime}
-                onChange={(e) =>
+                onChange={(e) =>{
                   setForm({ ...form, scheduleDateTime: e.target.value })
+                  }
                 }
               />
             </div>
