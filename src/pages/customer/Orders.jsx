@@ -157,7 +157,7 @@ export default function Orders() {
             <div className="mt-3">
               {order.OrderItem?.slice(0, 2).map((item) => (
                 <p key={item.id} className="text-sm text-gray-600">
-                  {item.qty}x {item.Product?.name} <span className="font-bold">{item.type}</span>
+                  {item.qty}x {item.Product?.name} <span className="text-right font-bold">({item.type})</span>
                 </p>
               ))}
             </div>
