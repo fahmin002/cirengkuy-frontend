@@ -79,7 +79,7 @@ export default function OrderCard({ order, onAction, loading }) {
       <div className="mt-3 text-sm text-left text-gray-600">
         {order.OrderItem?.slice(0, 2).map((it) => (
           <p key={it.id}>
-            {it.qty}x {it.Product?.name || 'Produk'} <span className="text-rightfont-bold">({it.type})</span>
+            {it.qty}x {it.Product?.name || 'Produk'} <span className="text-right font-bold">({it.type})</span>
           </p>
         ))}
         {order.OrderItem?.length > 2 && (
