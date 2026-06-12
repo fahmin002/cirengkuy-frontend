@@ -250,10 +250,15 @@ export default function AdminOrderDetail() {
                                 </div>
                             )}
 
-                            {order.scheduledAt && (
+                            {order.scheduledAt ? (
                                 <div className="flex justify-between">
-                                    <span className="text-gray-500">Waktu Pengambilan</span>
+                                    <span className="text-gray-500">Jadwal Diterima</span>
                                     <span className="font-semibold">{formatDateTime(order.scheduledAt)}</span>
+                                </div>
+                            ) : (
+                                <div className="flex justify-between">
+                                    <span className="text-gray-500">Jadwal Diterima</span>
+                                    <span className="font-semibold">{formatDateTime(order.createdAt)}</span>
                                 </div>
                             )}
                         </div>
@@ -299,7 +304,7 @@ export default function AdminOrderDetail() {
                         )}
 
                         {/* Total */}
-                        <div className="mt-5 pt-4 border-t flex justify-between items-center">
+                        <div className="mt-5 pt-4 border-t flex justify-center items-center">
                             <div>
                                 <p className="text-sm text-gray-500">Total Pembayaran</p>
                                 <h2 className="text-3xl font-black">Rp {order.total.toLocaleString()}</h2>

@@ -47,7 +47,7 @@ export default function OrderCard({ order, onAction, loading }) {
   const action = getNextAction(order.status);
 
   return (
-    <div className={`p-4 rounded-2xl shadow-lg ${statusStyle[order.status]}`}>
+    <div className={`p-4 text-left rounded-2xl shadow-lg ${statusStyle[order.status]}`}>
       {/* Header */}
       <div onClick={() => navigate(`/admin/order/${order.code}`)} className="flex justify-between items-start">
         <div>
@@ -59,8 +59,10 @@ export default function OrderCard({ order, onAction, loading }) {
           )}
           <p className="text-xs text-gray-500">
             {order.scheduledAt
-              ? `Diambil ${formatDateTime(order.pickupTime)}`
-              : `Diambil Sekarang`}
+              ? `${order.status === 'completed' ? 'Telah diterima' : 'Akan diterima'} ${formatDateTime(order.scheduledAt)}`
+              // Jika order.createdAt === hari ini, tampilkan "Hari ini, 12:00", jika selain hari ini tampilkan "12/10/2024 12:00"
+              : `${order.status === 'completed' ? 'Telah diterima' : 'Akan diterima'}  di hari yang sama, ${formatDateTime(order.createdAt, true)}`
+            }
           </p>
         </div>
 

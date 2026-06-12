@@ -392,7 +392,7 @@ export default function Checkout() {
           {/* Schedule */}
           <div className="mt-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Jadwal Pengambilan
+              Jadwal Diterima
             </label>
             <select
               className="shadow-md ring-1 ring-orange-200 shadow-orange-100 ease-in-out transition-all outline-none focus:ring-2 focus:ring-orange-500 focus:border-white p-2 border-gray-300 rounded-lg"
@@ -407,7 +407,7 @@ export default function Checkout() {
           {form.schedule === "besok" && (
             <div className="mt-4">
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Tanggal dan Waktu Pengambilan
+                Tanggal dan Waktu Diterima
               </label>
               <input
                 type="datetime-local"

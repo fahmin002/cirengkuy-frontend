@@ -142,13 +142,12 @@ export default function Orders() {
               <div>
                 <p className="font-semibold">Order #{order.id}</p>
 
-                <p className="text-xs text-gray-500 mt-1">
-                  {/* Tampilkan hari dan waktu, misal Senin 12/10/2024 12:00 */}
-                  {new Date(order.createdAt).toLocaleDateString("id-ID", {
-                    weekday: "long",
-                  }) +
-                    " " +
-                    formatDateTime(order.createdAt)}
+                <p className="text-xs text-gray-500">
+                  {order.scheduledAt
+                    ? `${order.status === 'completed' ? 'Telah diterima' : 'Akan diterima'} ${formatDateTime(order.scheduledAt)}`
+                    // Jika order.createdAt === hari ini, tampilkan "Hari ini, 12:00", jika selain hari ini tampilkan "12/10/2024 12:00"
+                    : `${order.status === 'completed' ? 'Telah diterima' : 'Akan diterima'}  di hari yang sama, ${formatDateTime(order.createdAt, true)}`
+                  }
                 </p>
               </div>
 
@@ -158,7 +157,7 @@ export default function Orders() {
             <div className="mt-3">
               {order.OrderItem?.slice(0, 2).map((item) => (
                 <p key={item.id} className="text-sm text-gray-600">
-                  {item.qty}x {item.Product?.name}
+                  {item.qty}x {item.Product?.name} <span className="font-bold">{item.type}</span>
                 </p>
               ))}
             </div>
