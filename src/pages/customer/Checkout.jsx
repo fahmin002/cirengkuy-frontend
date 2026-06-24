@@ -177,7 +177,7 @@ export default function Checkout() {
   };
 
   return (
-    <div className="p-4 lg:p-6 lg:w-md bg-gray-50 rounded-xl pb-24">
+    <div className={`p-4 lg:p-6 lg:w-md rounded-xl pb-24 ${storeOpen ? 'bg-gray-50' : 'bg-red-100'} min-h-screen`}>
       <div className="">
         <h1 className="text-xl font-bold google-sans-flex-bold text-left">
           Checkout
@@ -265,7 +265,7 @@ export default function Checkout() {
           ))}
         </div>
 
-        <div className="text-left my-4 flex flex-col gap-1">
+        <div className={`${storeOpen ? '' : 'hidden'} text-left my-4 flex flex-col gap-1`}>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Nama Pemesan
           </label>
@@ -435,7 +435,7 @@ export default function Checkout() {
       {/* tombol harus di bottom */}
       <div className="">
         {/* Total */}
-        <div className="flex flex-row justify-between">
+        <div className={`${storeOpen ? '' : 'hidden'} flex flex-row justify-between`}>
           <div>
             <div className="text-left ">Total Pembayaran</div>
             <div className="text-left font-bold text-xl">Rp {total}</div>

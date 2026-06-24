@@ -20,7 +20,7 @@ import GuestRoute from "./GuestRoute";
 import NotFound from "../pages/NotFound";
 import Reports from "../pages/admin/Reports";
 import OrderSuccess from "../pages/customer/PaymentSuccess";
-
+import DailyRevenueReport from "./pages/admin/reports/DailyRevenueReport";
 export default function AppRoutes() {
   return (
     <BrowserRouter>
@@ -85,6 +85,31 @@ export default function AppRoutes() {
               </ProtectedRoute>
             }
           />
+
+          <Route
+            path="reports/daily"
+            element={
+              <ProtectedRoute>
+                <Dail />
+              </ProtectedRoute>
+            }
+          />
+          {/* <Route
+            path="reports/weekly"
+            element={
+              <ProtectedRoute>
+                <Reports.WeeklyRevenueReport />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="reports/monthly"
+            element={
+              <ProtectedRoute>
+                <Reports.MonthlyRevenueReport />
+              </ProtectedRoute>
+            }
+          /> */}
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

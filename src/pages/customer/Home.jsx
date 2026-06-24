@@ -80,7 +80,7 @@ function Home() {
   };
 
   return (
-    <div className="min-h-screen lg:p-6 p-4 rounded-2xl bg-gray-50 pb-24">
+    <div className={`${storeOpen ? 'bg-gray-50' : 'bg-red-100'} min-h-screen lg:p-6 p-4 rounded-2xl pb-24`}>
       {!storeOpen && (
         <div className="p-4">
 
@@ -144,7 +144,7 @@ function Home() {
         {products.map((p) => (
           <div
             key={p.id}
-            className="bg-white gap-2 flex flex-col justify-around lg:items-center px-4 py-2 ring-1 ring-orange-200 shadow-orange-100 rounded-2xl shadow-md hover:scale-105 transition"
+            className={`${storeOpen ? 'bg-white ring-orange-200 shadow-orange-100' : 'bg-red-200 ring-red-500 shadow-red-100'} gap-2 flex flex-col justify-around lg:items-center px-4 py-2 ring-1 rounded-2xl shadow-md hover:scale-105 transition`}
           >
             {/* <div className=" bg-gray-200 rounded-full relative bottom-10"  /> */}
             <img

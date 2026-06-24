@@ -12,10 +12,11 @@ import {
 } from "recharts";
 
 import { BiDollarCircle, BiCalendarWeek, BiCalendar } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
 
 export default function Reports() {
   const [loading, setLoading] = useState(true);
-
+  const navigate = useNavigate();
   const [summary, setSummary] = useState({
     today: 0,
     week: 0,
@@ -107,6 +108,20 @@ export default function Reports() {
       text: "text-blue-600",
     },
   ];
+  const cardTitleMap = [
+    {
+      title: "Hari Ini",
+      route: "daily",
+    },
+    {
+      title: "Minggu Ini",
+      route: "weekly",
+    },
+    {
+      title: "Bulan Ini",
+      route: "monthly",
+    },
+  ]
 
   return (
     <div className="min-h-screen lg:w-lg bg-gray-50 rounded-xl pb-24">
@@ -191,7 +206,9 @@ export default function Reports() {
                       ${card.text}
                     `}
                   >
-                    {card.icon}
+                    <button onClick={() => navigate(`/admin/reports/${cardTitleMap.find(item => item.title === card.title)?.route}`)}>
+                      {card.icon}
+                    </button>
                   </div>
                 </div>
               </div>
