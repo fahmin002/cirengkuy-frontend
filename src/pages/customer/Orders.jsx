@@ -13,7 +13,7 @@ export default function Orders() {
     pending: "Menunggu Pembayaran",
     paid: "Sudah Dibayar",
     cooking: "Sedang Disiapkan",
-    ready: "Siap Diambil/Diantar",
+    ready: "Siap",
     completed: "Selesai",
     cancelled: "Dibatalkan",
   };

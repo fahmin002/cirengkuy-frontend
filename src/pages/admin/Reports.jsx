@@ -267,6 +267,24 @@ export default function Reports() {
                 </div>
               </div>
             ))}
+            {/* Button ke /admin/reports/product-daily */}
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={() => navigate("/admin/reports/product-daily")}
+                className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded"
+              >
+                Lihat Performa Produk Harian
+              </button>
+            </div>
+            {/* Button ke /admin/reports/product-monthly */}
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={() => navigate("/admin/reports/product-monthly")}
+                className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded"
+              >
+                Lihat Performa Produk Bulanan
+              </button>
+            </div>
           </div>
           {/* Grafik  */}
           <div

@@ -151,7 +151,7 @@ export default function AdminOrderDetail() {
                 <div className="px-6 pt-8 pb-5">
                     <div className="flex items-center gap-3">
                         <button
-                            onClick={() => navigate("/admin/orders")}
+                            onClick={() => navigate(-1)}
                             className="w-10 h-10 rounded-full bg-white shadow text-xl flex items-center justify-center hover:bg-gray-50 active:scale-95 transition"
                         >
                             <BiArrowBack size={20} />

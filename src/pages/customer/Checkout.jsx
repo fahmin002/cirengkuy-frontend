@@ -155,6 +155,7 @@ export default function Checkout() {
 
       const res = await api.post("/orders/customer", payload);
       const { paymentUrl } = res.data;
+      console.log(res.data);
       // reset form & cart
       setForm({
         name: "",
@@ -170,7 +171,12 @@ export default function Checkout() {
       window.location.href = paymentUrl;
     } catch (error) {
       console.error("Error during checkout:", error);
-      toast.error("Terjadi kesalahan saat melakukan checkout.");
+      // if error message contains word "stok"
+      if (error.message && error.message.includes("Stok")) {
+        toast.error(`${error.message} Hapus item dari keranjang dan coba lagi!`);
+      } else {
+        toast.error(error.message || "Terjadi kesalahan saat checkout!");
+      }
     } finally {
       setLoading(false);
     }

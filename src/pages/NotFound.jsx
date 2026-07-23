@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi";
 
 export default function NotFound() {
+  const navigate = useNavigate();
   return (
     <div
       className="
@@ -46,8 +47,8 @@ export default function NotFound() {
         <span>Albert Einstein</span>
       </p>
 
-      <Link
-        to="/"
+      <div
+        onClick={() => navigate(-1)}
         className="
           mt-6
           inline-flex
@@ -64,8 +65,8 @@ export default function NotFound() {
         "
       >
         <BiArrowBack size={18} />
-        Kembali ke Beranda
-      </Link>
+        Kembali
+      </div>
     </div>
   );
 }

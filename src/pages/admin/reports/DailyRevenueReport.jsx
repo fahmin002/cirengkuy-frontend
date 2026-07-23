@@ -8,13 +8,24 @@ import {
   BiReceipt,
   BiCheckCircle,
 } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
+import { formatDate } from "../../../utils/date";
 
 export default function DailyRevenueReport() {
-  const today = new Date().toISOString().split("T")[0];
+  const statusMap = {
+    pending: 'Pending',
+    paid: 'Dibayar',
+    cooking: 'Disiapkan',
+    ready: 'Siap',
+    completed: 'Selesai',
+    cancelled: 'Dibatalkan',
+  };
 
+  const today = new Date().toISOString().split("T")[0];
+  const navigate = useNavigate();
   const [date, setDate] = useState(today);
   const [loading, setLoading] = useState(false);
-
+  const [search, setSearch] = useState("");
   const [report, setReport] = useState({
     revenue: 0,
     orders: 0,
@@ -22,6 +33,7 @@ export default function DailyRevenueReport() {
     cancelled: 0,
   });
 
+  const [transactions, setTransactions] = useState([]);
   const formatRupiah = (value) =>
     new Intl.NumberFormat("id-ID", {
       style: "currency",
@@ -34,10 +46,11 @@ export default function DailyRevenueReport() {
       setLoading(true);
 
       const res = await api.get(
-        `/reports/admin/daily-revenue?date=${date}`
+        `/reports/admin/daily-report?date=${date}`
       );
 
       setReport(res.data);
+      setTransactions(res.data.transactions || []);
     } catch (err) {
       console.error(err);
       alert("Gagal mengambil laporan");
@@ -83,6 +96,15 @@ export default function DailyRevenueReport() {
       bg: "bg-red-50",
     },
   ];
+
+  const filteredTransactions = transactions.filter((trx) =>
+    trx.code
+      .toLowerCase()
+      .includes(search.toLowerCase()) ||
+    trx.customerName
+      .toLowerCase()
+      .includes(search.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 lg:w-lg rounded-xl pb-24">
@@ -166,7 +188,7 @@ export default function DailyRevenueReport() {
                   border-gray-100
                 "
               >
-                <div className="flex justify-between items-start">
+                <div className="flex flex-col justify-between items-center">
                   <div>
                     <p className="text-sm text-gray-500">
                       {card.title}
@@ -193,6 +215,103 @@ export default function DailyRevenueReport() {
             ))}
           </div>
 
+          {/* Transaction List */}
+          <div
+            className="
+    mx-4
+    mt-6
+    bg-white
+    rounded-3xl
+    border
+    border-gray-100
+    overflow-hidden
+  "
+          >
+            <div className="p-5 border-b border-gray-100">
+              <h2 className="font-bold text-lg">
+                Daftar Transaksi
+              </h2>
+
+              <p className="text-sm text-gray-500 mt-1">
+                Transaksi pada tanggal yang dipilih
+              </p>
+
+              <div className="mt-4">
+                <input
+                  type="text"
+                  placeholder="Cari kode atau nama pelanggan..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="
+            w-full
+            px-4
+            py-3
+            rounded-2xl
+            border
+            border-gray-200
+            bg-white
+            focus:outline-none
+            focus:ring-2
+            focus:ring-orange-300
+          "
+                />
+              </div>
+            </div>
+
+            {filteredTransactions.length === 0 ? (
+              <div className="p-8 text-center text-gray-400">
+                Tidak ada transaksi
+              </div>
+            ) : (
+              filteredTransactions.map((trx) => (
+                <div
+                  onClick={() => navigate(`/admin/order/${trx.code}`)}
+                  key={trx.id}
+                  className="
+          p-4
+          border-b
+          border-gray-100
+          last:border-b-0
+        "
+                >
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="font-bold">
+                        {trx.orderCode}
+                      </p>
+
+                      <p className="text-sm text-gray-500">
+                        {trx.customerName}
+                      </p>
+                    </div>
+
+                    <div className="text-right">
+                      <p className="font-bold text-orange-500">
+                        {formatRupiah(trx.total)}
+                      </p>
+
+                      <span
+                        className={`
+                text-xs
+                px-2
+                py-1
+                rounded-full
+                ${trx.status === "completed"
+                            ? "bg-green-100 text-green-700"
+                            : trx.status === "cancelled"
+                              ? "bg-red-100 text-red-700"
+                              : "bg-orange-100 text-orange-700"
+                          }
+              `}
+                      >
+                        {statusMap[trx.status] || trx.status}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
           {/* Summary */}
           <div
             className="
@@ -212,7 +331,7 @@ export default function DailyRevenueReport() {
             <p className="text-gray-500 mt-2 text-sm leading-relaxed">
               Pada tanggal{" "}
               <span className="font-semibold">
-                {date}
+                {formatDate(date)}
               </span>
               , sistem mencatat sebanyak{" "}
               <span className="font-semibold">
@@ -225,6 +344,16 @@ export default function DailyRevenueReport() {
               .
             </p>
           </div>
+          {/* Tombol Kembali */}
+          <div className="mt-6 flex justify-center">
+            <button
+              onClick={() => navigate("/admin/reports")}
+              className="px-6 py-3 bg-orange-500 text-white rounded-2xl hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-300"
+            >
+              Kembali ke Daftar Laporan
+            </button>
+          </div>
+
         </>
       )}
     </div>

@@ -20,7 +20,12 @@ import GuestRoute from "./GuestRoute";
 import NotFound from "../pages/NotFound";
 import Reports from "../pages/admin/Reports";
 import OrderSuccess from "../pages/customer/PaymentSuccess";
-import DailyRevenueReport from "./pages/admin/reports/DailyRevenueReport";
+import DailyRevenueReport from "../pages/admin/reports/DailyRevenueReport";
+import WeeklyRevenueReport from "../pages/admin/reports/WeeklyRevenueReport";
+import MonthlyRevenueReport from "../pages/admin/reports/MonthlyRevenueReport";
+import ProductDailyReport from "../pages/admin/reports/ProductDailyReport";
+import ProductMonthlyReport from "../pages/admin/reports/ProductMonthlyReport";
+
 export default function AppRoutes() {
   return (
     <BrowserRouter>
@@ -90,15 +95,15 @@ export default function AppRoutes() {
             path="reports/daily"
             element={
               <ProtectedRoute>
-                <Dail />
+                <DailyRevenueReport />
               </ProtectedRoute>
             }
           />
-          {/* <Route
+          <Route
             path="reports/weekly"
             element={
               <ProtectedRoute>
-                <Reports.WeeklyRevenueReport />
+                <WeeklyRevenueReport />
               </ProtectedRoute>
             }
           />
@@ -106,10 +111,26 @@ export default function AppRoutes() {
             path="reports/monthly"
             element={
               <ProtectedRoute>
-                <Reports.MonthlyRevenueReport />
+                <MonthlyRevenueReport />
               </ProtectedRoute>
             }
-          /> */}
+          />
+          <Route
+            path="reports/product-daily"
+            element={
+              <ProtectedRoute>
+                <ProductDailyReport />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="reports/product-monthly"
+            element={
+              <ProtectedRoute>
+                <ProductMonthlyReport />
+              </ProtectedRoute>
+            }
+          />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
