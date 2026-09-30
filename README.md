@@ -1,5 +1,5 @@
 # 🍢 CirengKuy Frontend
-
+Website dapat diakses pada [cirengkuy.netlify.app(https://cirengkuy.netlify.app)]
 Antarmuka web untuk sistem pemesanan **CirengKuy**. Dibangun dengan React dan Vite, terhubung ke [CirengKuy Backend](https://github.com/fahmin002/cirengkuy-backend) melalui REST API dan Socket.IO untuk pembaruan real-time.
 
 ## ✨ Fitur
